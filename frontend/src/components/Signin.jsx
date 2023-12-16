@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import '../static/css/components/Signin.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -40,8 +40,8 @@ const Signin = () => {
                     <a href="/signin">Join Now</a>
                 </div>
             </div> 
-            <div class="or_signin_container">
-                <div class="or_signin_text">Or</div>
+            <div className="or_signin_container">
+                <div className="or_signin_text">Or</div>
             </div>
             <div className='alternate_login_options'>
                 <button>Channeli Login</button>
