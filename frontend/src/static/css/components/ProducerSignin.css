@@ -6,7 +6,7 @@
     --button-background-hover: #08bc50;
 }
 
-.signin_container {
+.producer_signin_container {
     height: 25rem;
     width: 20rem;
     display: flex;
@@ -14,19 +14,18 @@
     align-items: center;
     background-color: var(--primary-color);
     border-radius: 1rem;
-    border: 0.5px solid #0077B5;
-    padding: 0.5rem;
+    border: 0.5px solid grey;
+    padding: 1rem;
 }
 
-.heading {
+.producer_heading {
     font-size: 28px;
     font-weight: bold;
     margin-top: 1rem;
     color: var(--secondary-color);
-    
 }
 
-.form_fields {
+.producer_form_fields {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -35,7 +34,7 @@
     height: 40%;
 }
 
-.form_fields input {
+.producer_form_fields input {
     margin-bottom: 0.5rem;
     width: 80%;
     height: 30%;
@@ -45,13 +44,13 @@
     background-color: var(--primary-color);
 }
 
-.form_submit {
+.producer_form_submit {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.form_submit button {
+.producer_form_submit button {
     height: 3rem;
     width: auto;
     font-size: 1rem;
@@ -64,49 +63,35 @@
     font-weight: bold;
 }
 
-.form_submit button:hover {
+.producer_form_submit button:hover {
     cursor: pointer;
 }
 
-.signin_prompt {
+.producer_signin_prompt {
     margin-top: 0.25rem;
     display: flex;
     flex-direction: row;
     justify-content: center;
 }
 
-.signin_prompt span {
+.producer_signin_prompt span {
     font-size: 1rem;
     margin-right: 0.25rem;
 }
 
-.signin_prompt a {
+.producer_signin_prompt a {
     text-decoration: none;
 }
 
-.or_signin_container {
-    text-align: center;
-    margin: 0.75rem;
+.producer_informative_message {
+    margin-top: 2.5rem;
+    background-color: #EB3031;
+    padding: 1rem;
+    border-radius: 1rem;
 }
 
-.or_signin_text {
-    font-weight: bold;
-}
-
-.alternate_login_options button {
-    height: 3rem;
-    width: auto;
-    font-size: 1rem;
-    background-color: var(--primary-color);
-    color: var(--secondary-color);
-    padding: 0.5rem 1.5rem;
-    margin-bottom: 1rem;
-    border: 1px solid var(--secondary-color);
-    border-radius: 3rem;
-    font-weight: bold;
-}
-
-.alternate_login_options button:hover {
-    background-color: #dff2fc;
-    cursor: pointer;
+.producer_informative_message span {
+    color: white;
+    /* font-weight: bold; */
+    font-size: 1.1rem;
 }

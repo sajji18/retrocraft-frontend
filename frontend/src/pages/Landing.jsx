@@ -1,6 +1,6 @@
 import Navbar from "../components/Navbar"
 import '../static/css/pages/Landing.css';
-import Signin from "../components/Signin";
+import Signin from "../components/FreelancerSignin";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -12,7 +12,7 @@ const Landing = () => {
     useEffect(() => {
         const token = localStorage.getItem("token")
         if (token) {
-            axios.get('http://localhost:3000/userDetails', {
+            axios.get('http://localhost:3000/freelancer/details', {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -20,7 +20,7 @@ const Landing = () => {
             .then(response => {
                 console.log(response.data)
                 setToken(token)
-                setUserRole(response.data.user.payload.role);
+                // setUserRole(response.data.user.role);
             })
             .catch(error => {
                 // console.log(error.response.data)
@@ -32,12 +32,13 @@ const Landing = () => {
     if (!token) {
         return (
             <div className="landing_container">
-                <img src="../../public/background4.png" alt="Error Fetching Image" />
+                {/* <img src="../../public/background2.png" alt="Error Fetching Image" /> */}
                 <Navbar></Navbar>
-                <div className="signin-container">
+
+                {/* <div className="signin-container">
                     <span className="landing_span">Bridging the Gap to New Opportunities</span>
                     <Signin />
-                </div> 
+                </div>  */}
             </div>
         )
     }

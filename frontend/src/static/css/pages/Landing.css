@@ -1,7 +1,7 @@
 body {
     margin: 0;
     padding: 0;
-    background-color: #F6F7F8;
+    background-color: #d3d5d6;
 }
 
 .landing_container {
@@ -10,26 +10,26 @@ body {
     height: 100vh;
 }
 
-.landing_container img {
+/* .landing_container img {
     position: absolute;
     z-index: -1;
-    width: 50%; 
+    width: 100%; 
     height: 100%; 
-}
+} */
 
-.signin-container {
+/* .signin-container {
     flex: 1; 
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-left: 50%;
     transform: translateY(15%);
-}
+    text-align: center;
+} */
 
-.landing_span {
+/* .landing_span {
     font-size: 2rem;
     margin-bottom: 2rem;
     color: #0077B5;
-    text-decoration: underline;
-}
+    font-weight: 500;
+} */
