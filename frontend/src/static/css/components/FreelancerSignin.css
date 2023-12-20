@@ -7,7 +7,7 @@
 }
 
 .signin_container {
-    height: 25rem;
+    height: 30rem;
     width: 20rem;
     display: flex;
     flex-direction: column;
@@ -109,4 +109,17 @@
 .alternate_login_options button:hover {
     background-color: #dff2fc;
     cursor: pointer;
+}
+
+.freelancer_informative_message {
+    margin-top: 0.25rem;
+    background-color: #EB3031;
+    padding: 1rem;
+    border-radius: 1rem;
+}
+
+.freelancer_informative_message span {
+    color: white;
+    /* font-weight: bold; */
+    font-size: 1.1rem;
 }

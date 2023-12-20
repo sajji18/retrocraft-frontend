@@ -6,13 +6,13 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Landing = () => {
-    const [userRole, setUserRole] = useState('');
-    const [token, setToken] = useState(null);
+    const [userRole, setUserRole] = useState(localStorage.getItem("role"));
+    const [token, setToken] = useState(localStorage.getItem("token"));
+    const navigate = useNavigate();
 
     useEffect(() => {
-        const token = localStorage.getItem("token")
         if (token) {
-            axios.get('http://localhost:3000/freelancer/details', {
+            axios.get('http://localhost:3000/details', {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -20,21 +20,33 @@ const Landing = () => {
             .then(response => {
                 console.log(response.data)
                 setToken(token)
-                // setUserRole(response.data.user.role);
+                const role = response.data.user.payload.role;
+                localStorage.setItem("token", response.data.token)
+                localStorage.setItem("role", role);
+                setUserRole(role)
             })
             .catch(error => {
                 // console.log(error.response.data)
                 console.error('Error fetching user data:', error);
             });
         }
-    }, []);
 
-    if (!token) {
+        if (userRole === 'FREELANCER') {
+            navigate("/freelancer-dashboard");
+        }
+
+        else if (userRole === 'PRODUCER') {
+            navigate("/producer-dashboard");
+        }
+    }, [userRole, token]);
+    console.log(token)
+
+    if (token === null) {
         return (
             <div className="landing_container">
                 {/* <img src="../../public/background2.png" alt="Error Fetching Image" /> */}
                 <Navbar></Navbar>
-
+    
                 {/* <div className="signin-container">
                     <span className="landing_span">Bridging the Gap to New Opportunities</span>
                     <Signin />
@@ -42,23 +54,9 @@ const Landing = () => {
             </div>
         )
     }
-
-    else if ((userRole === 'FREELANCER')) {
-        return (
-            <h1>Freelancer</h1>
-        )
-    }
-
-    else if ((userRole === 'PRODUCER')) {
-        return (
-            <h1>Producer</h1>
-        )
-    }
-
     else {
-        <h1>Loading....</h1>
+        return <h1>...Loading</h1>
     }
-
 }
 
 export default Landing;

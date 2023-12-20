@@ -6,8 +6,12 @@ import { useNavigate } from 'react-router-dom';
 const ProducerSignin = () => {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
-    const [message, setMessage] = useState("")
+    const [errorMessage, setErrorMessage] = useState("")
     const navigate = useNavigate();
+
+    useEffect(() => {
+        setErrorMessage('');
+    }, [username, password])
 
     const handleSubmit = () => {
         axios
@@ -17,12 +21,11 @@ const ProducerSignin = () => {
         })
         .then((response) => {
             console.log(response.data)
+            localStorage.setItem("token", response.data.token)
             navigate("/");
         })
         .catch((error) => {
-            setUsername('')
-            setPassword('')
-            setMessage(error.response.data.message)
+            setErrorMessage(error.response.data.message)
             console.error("Error Logging in: ", error);
         })
     }
@@ -44,8 +47,8 @@ const ProducerSignin = () => {
                 </div>
             </div> 
             {
-                message ? 
-                ( <div className='producer_informative_message'><span>{message}</span></div> ) : ( <></> )
+                errorMessage ? 
+                ( <div className='producer_informative_message'><span>{errorMessage}</span></div> ) : ( <></> )
             }
         </div>
     )
