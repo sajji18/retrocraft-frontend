@@ -1,7 +1,13 @@
 :root {
-    --primary-color: #FAFBFD;
+    --primary-color: #FFFFFF;
     --secondary-color: #0077B5;
     --button-background-hover: #08bc50;
+    --background-color: #fdfaf5;
+}
+
+body {
+    background-color: var(--background-color);
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 .freelancer_navbar_container {
@@ -50,7 +56,7 @@
     width: 20%;
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
+    justify-content: flex-end;
     align-items: center;
 }
 
@@ -71,3 +77,71 @@
     background-color: #CACCCE;
     cursor: pointer;
 }
+
+.freelancer_dash_main_area {
+    display: flex;
+    flex: 1;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 90vh;
+}
+
+.freelancer_dash_main_left_area {
+    display: flex;
+    flex-direction: column;
+    width: 45%;
+    height: 90%;
+    align-items: center;
+    transform: translateY(-5%);
+}
+
+.freelancer_dash_main_left_head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 3rem;
+    width: 90%;
+    margin-top: 1rem;
+    background-color: var(--background-color);
+}
+
+.freelancer_dash_main_left_head span {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.freelancer_dash_main_posts {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--background-color);
+    width: 90%;
+    height: 80%;
+    overflow-y: auto;
+    border-radius: 1rem;
+    padding: 0.5rem 0 0.5rem 0.5rem;
+}
+
+.freelancer_dash_job_card {
+    min-height: 20%;
+    width: 90%;
+    border-radius: 1rem;
+    background-color: white;
+    padding: 1rem;
+    margin: 0.5rem 0rem;
+}
+
+.freelancer_dash_job_card:hover {
+    background-color: var(--secondary-color);
+    color: #FAFBFD;
+    cursor: pointer;
+}
+
+.freelancer_dash_main_right {
+    display: flex;
+    flex-direction: column;
+    width: 45%;
+    height: 90%;
+    align-items: center;
+}
+
