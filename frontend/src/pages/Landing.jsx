@@ -11,25 +11,21 @@ const Landing = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (token) {
-            axios.get('http://localhost:3000/details', {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-            .then(response => {
-                console.log(response.data)
-                setToken(token)
-                const role = response.data.user.payload.role;
-                localStorage.setItem("token", response.data.token)
-                localStorage.setItem("role", role);
-                setUserRole(role)
-            })
-            .catch(error => {
-                // console.log(error.response.data)
-                console.error('Error fetching user data:', error);
-            });
-        }
+        axios.get('http://localhost:3000/details', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            console.log(response.data)
+            const role = response.data.user.payload.role;
+            localStorage.setItem("role", role);
+            setUserRole(role)
+        })
+        .catch(error => {
+            // console.log(error.response.data)
+            console.error('Error fetching user data:', error);
+        });
 
         if (userRole === 'FREELANCER') {
             navigate("/freelancer-dashboard");
