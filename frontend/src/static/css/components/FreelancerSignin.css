@@ -2,7 +2,6 @@
 
 :root {
     --primary-color: #FAFBFD;
-    --secondary-color: #0077B5;
     --button-background-hover: #08bc50;
 }
 
@@ -22,7 +21,7 @@
     font-size: 28px;
     font-weight: bold;
     margin-top: 1rem;
-    color: var(--secondary-color);
+    color: #8DD7AB;
     
 }
 
@@ -55,7 +54,7 @@
     height: 3rem;
     width: auto;
     font-size: 1rem;
-    background-color: var(--secondary-color);
+    background-color: #8DD7AB;
     color: var(--primary-color);
     padding: 0.5rem 1.5rem;
     margin-bottom: 1rem;
@@ -98,10 +97,10 @@
     width: auto;
     font-size: 1rem;
     background-color: var(--primary-color);
-    color: var(--secondary-color);
+    color: #8DD7AB;
     padding: 0.5rem 1.5rem;
     margin-bottom: 1rem;
-    border: 1px solid var(--secondary-color);
+    border: 1px solid #8DD7AB;
     border-radius: 3rem;
     font-weight: bold;
 }

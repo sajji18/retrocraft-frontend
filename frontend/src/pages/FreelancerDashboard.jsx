@@ -2,13 +2,65 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router';
 import axios from 'axios';
 import '../static/css/pages/FreelancerDashboard.css';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+
+// Using this until i use an actual api to fetch blogs online
+// (Since number of requests per day are limited :D)
+const blogPosts = [
+    {
+        image: "",
+        title: "",
+        link: "",
+    },
+    {
+        image: "",
+        title: "",
+        link: "",
+    },
+    {
+        image: "",
+        title: "",
+        link: "",
+    },
+    {
+        image: "",
+        title: "",
+        link: "",
+    },
+    {
+        image: "",
+        title: "",
+        link: "",
+    }
+]
+
+const connectionRequestsData = [
+    {
+        username: "USER-1",
+        role: "FREELANCER",
+        status: "PENDING"
+    },
+    {
+        username: "USER-2",
+        role: "PRODUCER",
+        status: "PENDING"
+    },
+    {
+        username: "USER3",
+        role: "FREELANCER",
+        status: "PENDING"
+    }
+]
 
 const FreelancerDashboard = () => {
     const [userRole, setUserRole] = useState(localStorage.getItem("role"));
     const [token, setToken] = useState(localStorage.getItem("token"));
+    const navigate = useNavigate();
+
+    // States for dynamic rendering
     const [jobPosts, setJobPosts] = useState([]);
     const [connectionRequests, setConnectionRequest] = useState([]);
-    const navigate = useNavigate();
+    const [appliedJob, setAppliedJobs] = useState([]);
 
     useEffect(() => {
         axios
@@ -50,6 +102,10 @@ const FreelancerDashboard = () => {
 
     console.log(jobPosts)
 
+    const handleProfileClick = () => {
+
+    }
+
     const handleLogout = () => {
         localStorage.clear();
         navigate("/");
@@ -74,7 +130,8 @@ const FreelancerDashboard = () => {
                         </a>
                     </div>
                     <div className='freelancer_navbar_right'>
-                        <button className='freelancer_navbar_option_1' onClick={handleLogout}>Logout</button>
+                        <button className='freelancer_profile_button' onClick={handleProfileClick}><AccountCircleIcon style={{ fontSize: '2rem' }}/></button>
+                        <button className='freelancer_logout' onClick={handleLogout}>Logout</button>
                     </div>
                 </div>
                 <div className='freelancer_dash_main_area'>
@@ -83,7 +140,7 @@ const FreelancerDashboard = () => {
                             <span>Open Vacancies</span>
                         </div>
                         <div className='freelancer_dash_main_posts'>
-                            {
+                            { 
                                 jobPosts.map((job, index) => {
                                     return (
                                         <div className='freelancer_dash_job_card' key={job._id}>
@@ -95,10 +152,24 @@ const FreelancerDashboard = () => {
                         </div>
                     </div>
                     
-                    <div className='freelancer_dash_main_right'>
-                        <div className='freelancer_dash_main_right_part1'>
-                            <span>Pending Requests</span>
-                            
+                    <div className='freelancer_dash_main_right_area'>
+                        <div className='freelancer_dash_main_right_head'>
+                            <span>Pending Connection Requests</span>
+                        </div>
+                        <div className='freelancer_dash_main_requests'>
+
+                        </div>
+                        <div className='freelancer_dash_main_right_head'>
+                            <span>Applied Jobs</span>
+                        </div>
+                        <div className='freelancer_dash_main_requests'>
+
+                        </div>
+                        <div className='freelancer_dash_main_right_head'>
+                            <span>Blogs You Might Like:</span>
+                        </div>
+                        <div className='freelancer_dash_main_requests'>
+
                         </div>
                     </div>
                 </div>

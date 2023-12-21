@@ -2,7 +2,6 @@
 
 :root {
     --primary-color: #FAFBFD;
-    --secondary-color: #0077B5;
     --button-background-hover: #08bc50;
 }
 
@@ -22,7 +21,7 @@
     font-size: 28px;
     font-weight: bold;
     margin-top: 1rem;
-    color: var(--secondary-color);
+    color: #8DD7AB;
 }
 
 .producer_form_fields {
@@ -56,7 +55,7 @@
     height: 3rem;
     width: auto;
     font-size: 1rem;
-    background-color: var(--secondary-color);
+    background-color: #8DD7AB;
     color: var(--primary-color);
     padding: 0.5rem 1.5rem;
     margin-bottom: 1rem;

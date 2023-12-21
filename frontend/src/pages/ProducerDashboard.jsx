@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router';
 import axios from 'axios';
 import '../static/css/pages/ProducerDashboard.css';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const ProducerDashboard = () => {
     const [userRole, setUserRole] = useState(localStorage.getItem("role"));
@@ -30,6 +31,10 @@ const ProducerDashboard = () => {
     }, []);
     // console.log(token)
 
+    const handleProfileClick = () => {
+
+    }
+
     const handleLogout = () => {
         localStorage.clear();
         navigate("/");
@@ -54,7 +59,41 @@ const ProducerDashboard = () => {
                         </a>
                     </div>
                     <div className='producer_navbar_right'>
-                    <button className='producer_navbar_option_1' onClick={handleLogout}>Logout</button>
+                    <button className='producer_profile_button' onClick={handleProfileClick}><AccountCircleIcon style={{ fontSize: '2rem' }}/></button>
+                    <button className='producer_navbar_logout' onClick={handleLogout}>Logout</button>
+                    </div>
+                </div>
+                <div className='producer_dash_main_area'>
+                    <div className='producer_dash_main_left_area'>
+                        <div className='producer_dash_main_left_head'>
+                            <span>My Job Posts</span>
+                        </div>
+                        <div className='producer_dash_main_posts'>
+                            {/* { 
+                                jobPosts.map((job, index) => {
+                                    return (
+                                        <div className='producer_dash_job_card' key={job._id}>
+                                            <span>{job.title}</span>
+                                        </div>
+                                    )
+                                })
+                            } */}
+                        </div>
+                    </div>
+                    
+                    <div className='producer_dash_main_right_area'>
+                        <div className='producer_dash_main_right_head'>
+                            <span>Pending Connection Requests</span>
+                        </div>
+                        <div className='producer_dash_main_requests'>
+
+                        </div>
+                        <div className='producer_dash_main_right_head'>
+                            <span>Create Job</span>
+                        </div>
+                        <div className='producer_dash_main_job_post_form'>
+
+                        </div>
                     </div>
                 </div>
             </>

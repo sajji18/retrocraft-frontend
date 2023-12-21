@@ -31,13 +31,13 @@
 }
 
 .span_1 {
-    color: var(--secondary-color);
+    color: #8DD7AB;
     margin-right: 0.2rem;
     font-size: 1.5rem;
 }
 
 .span_2 {
-    background-color: var(--secondary-color);
+    background-color: #8DD7AB;
     color: 	var(--primary-color);
     border-radius: 0.4rem;
     vertical-align: middle;
@@ -77,16 +77,17 @@
     width: auto;
     font-size: 1rem;
     background-color: var(--primary-color);
-    color: var(--secondary-color);
+    color: #8DD7AB;
     margin: 0rem 0.25rem;
     padding: 0.5rem 1.5rem;
-    border: 1px solid var(--secondary-color);
+    border: 1px solid #8DD7AB;
     border-radius: 3rem;
     font-weight: bold;
     text-align: center;
 }
 
 .navbar_option_2:hover {
-    background-color: #dff2fc;
+    background-color: #8DD7AB;
+    color: white;
     cursor: pointer;
 }
