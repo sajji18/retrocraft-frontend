@@ -6,6 +6,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const ProducerDashboard = () => {
     const [userRole, setUserRole] = useState(localStorage.getItem("role"));
+    const [username, setUsername] = useState('');
     const [token, setToken] = useState(localStorage.getItem("token"));
     const [myJobPosts, setMyJobPosts] = useState([]);
     const navigate = useNavigate();
@@ -40,7 +41,7 @@ const ProducerDashboard = () => {
         })
         .then((response) => {
             setMyJobPosts((prevJobs) => [response.data, ...prevJobs]);
-            
+
             setTitle('');
             setDescription('');
             setRequirements('');
@@ -66,7 +67,8 @@ const ProducerDashboard = () => {
             console.log(response.data)
             const role = response.data.user.payload.role;
             localStorage.setItem("role", role);
-            setUserRole(role)
+            setUserRole(role);
+            setUsername(response.data.user.payload.username);
         })
         .catch(error => {
             // console.log(error.response.data)
@@ -95,7 +97,7 @@ const ProducerDashboard = () => {
     }, [])
 
     const handleProfileClick = () => {
-
+        navigate(`/producer-dashboard/profile/${username}`)
     }
 
     const handleLogout = () => {
@@ -137,6 +139,7 @@ const ProducerDashboard = () => {
                                     return (
                                         <div className='producer_dash_job_card' key={job._id}>
                                             <span>{job.title}</span>
+                                            <button onClick={() => navigate(`/producer-dashboard/${job._id}`)}>View</button>
                                         </div>
                                     )
                                 })
