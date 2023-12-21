@@ -124,7 +124,7 @@ const FreelancerDashboard = () => {
             <>
                 <div className='freelancer_navbar_container'>
                     <div className='freelancer_navbar_left'>
-                        <a href='/'>
+                        <a href='/freelancer-dashboard'>
                             <span className='freelancer_nav_span_1'>Retrocraft</span>
                             <span className='freelancer_nav_span_2'>Hub</span>
                         </a>

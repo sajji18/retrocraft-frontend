@@ -7,7 +7,54 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 const ProducerDashboard = () => {
     const [userRole, setUserRole] = useState(localStorage.getItem("role"));
     const [token, setToken] = useState(localStorage.getItem("token"));
+    const [myJobPosts, setMyJobPosts] = useState([]);
     const navigate = useNavigate();
+
+    // Create Job Form State:
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [requirements, setRequirements] = useState(['']);
+    const [skillsRequired, setSkillsRequired] = useState(['']);
+    const [employmentType, setEmploymentType] = useState('');
+    const [location, setLocation] = useState('');
+    const [salary, setSalary] = useState('');
+
+    const handleJobFormSubmit = (e) => {
+        e.preventDefault();
+        const requirementsArray = requirements.split('\n').map((item) => item.trim());
+        const skillsRequiredArray = skillsRequired.split('\n').map((item) => item.trim());
+
+        axios
+        .post('http://localhost:3000/producer/jobs',{
+            title: title,
+            description: description,
+            requirements: requirementsArray,
+            skillsRequired: skillsRequiredArray,
+            employmentType: employmentType,
+            location: location,
+            salary: salary
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then((response) => {
+            setMyJobPosts((prevJobs) => [response.data, ...prevJobs]);
+            
+            setTitle('');
+            setDescription('');
+            setRequirements('');
+            setSkillsRequired('');
+            setEmploymentType('');
+            setLocation('');
+            setSalary('');
+    
+            console.log(response.data);
+        })
+        .catch((error) => {
+            console.error('Error creating job:', error);
+        });
+    }
 
     useEffect(() => {
         axios.get('http://localhost:3000/details', {
@@ -31,6 +78,22 @@ const ProducerDashboard = () => {
     }, []);
     // console.log(token)
 
+    useEffect(() => {
+        axios
+        .get('http://localhost:3000/producer/jobs', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            console.log(response.data)
+            setMyJobPosts(response.data)
+        })
+        .catch(error => {
+            console.error('Error fetching user data:', error);
+        });
+    }, [])
+
     const handleProfileClick = () => {
 
     }
@@ -53,7 +116,7 @@ const ProducerDashboard = () => {
             <>
                 <div className='producer_navbar_container'>
                     <div className='producer_navbar_left'>
-                        <a href='/'>
+                        <a href='/producer-dashboard'>
                             <span className='producer_nav_span_1'>Retrocraft</span>
                             <span className='producer_nav_span_2'>Hub</span>
                         </a>
@@ -69,15 +132,15 @@ const ProducerDashboard = () => {
                             <span>My Job Posts</span>
                         </div>
                         <div className='producer_dash_main_posts'>
-                            {/* { 
-                                jobPosts.map((job, index) => {
+                            { 
+                                myJobPosts.map((job, index) => {
                                     return (
                                         <div className='producer_dash_job_card' key={job._id}>
                                             <span>{job.title}</span>
                                         </div>
                                     )
                                 })
-                            } */}
+                            }
                         </div>
                     </div>
                     
@@ -92,7 +155,81 @@ const ProducerDashboard = () => {
                             <span>Create Job</span>
                         </div>
                         <div className='producer_dash_main_job_post_form'>
-
+                            {/* <div className='producer_job_form_heading'>
+                                <span>Details</span>
+                            </div> */}
+                            <div className='producer_job_form_title'>
+                                <span>Title</span>
+                                <input 
+                                    type="text"
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                    placeholder='Enter Title'
+                                />
+                            </div>
+                            <div className='producer_job_form_description'>
+                                <label htmlFor="description">Description:</label>
+                                <textarea 
+                                    name="description" 
+                                    rows="5" 
+                                    cols="67"
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
+                                    placeholder="Enter Description"
+                                />
+                            </div>
+                            <div className='producer_job_form_requirements'>
+                                <label htmlFor='requirements'>Requirements (one per line):</label>
+                                <textarea
+                                    rows="5" 
+                                    cols="67"
+                                    name='requirements'
+                                    value={requirements}
+                                    onChange={(e) => setRequirements(e.target.value)}
+                                    placeholder="Enter requirements"
+                                />
+                            </div>
+                            <div className='producer_job_form_skills'>
+                                <label htmlFor='skills'>Skills (one per line):</label>
+                                <textarea
+                                    name='skills'
+                                    value={skillsRequired}
+                                    onChange={(e) => setSkillsRequired(e.target.value)}
+                                    placeholder="Enter skills"
+                                />
+                            </div>
+                            <div className='producer_job_form_employment_type'>
+                                <label htmlFor='employment'>Employment Type:</label>
+                                <select name='employment' value={employmentType} onChange={(e) => setEmploymentType(e.target.value)}>
+                                    <option value="">Select Employment Type</option>
+                                    <option value="Full-time">Full-time</option>
+                                    <option value="Part-time">Part-time</option>
+                                    <option value="Contract">Contract</option>
+                                    <option value="Freelance">Freelance</option>
+                                </select>
+                            </div>
+                            <div className='producer_job_form_location'>
+                                <label htmlFor='location'>Location:</label>
+                                <input
+                                    type="text"
+                                    value={location}
+                                    onChange={(e) => setLocation(e.target.value)}
+                                    placeholder="Enter location"
+                                />
+                            </div>
+                            <div className='producer_job_form_salary'>
+                                <label htmlFor='salary'>Salary:</label>
+                                <input
+                                    name='salary'
+                                    type="number"
+                                    value={salary}
+                                    onChange={(e) => setSalary(e.target.value)}
+                                    placeholder="Enter salary"
+                                />
+                            </div>
+                            <div className='producer_job_form_submit'>
+                                <button onClick={handleJobFormSubmit}>Create Job</button>
+                            </div>
                         </div>
                     </div>
                 </div>
