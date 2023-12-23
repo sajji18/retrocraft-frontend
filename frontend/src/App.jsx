@@ -5,8 +5,8 @@ import SignupPage from './pages/SignupPage';
 import SigninPage from './pages/SigninPage';
 import ProducerDashboard from './pages/ProducerDashboard';
 import FreelancerDashboard from './pages/FreelancerDashboard';
-import ProfileProfileDetail from './pages/ProducerProfileDetail';
-import ProducerPostDetail from './pages/ProducerPostDetail';
+import ProfileProfileDetail from './pages/ProfileDetail';
+import PostDetail from './pages/PostDetail';
 
 function App() {
 
@@ -20,8 +20,8 @@ function App() {
           <Route path='/freelancer-dashboard' element={<FreelancerDashboard/>} />
 
           <Route path='/producer-dashboard' element={<ProducerDashboard/>} />
-          <Route path='/producer-dashboard/profile/:username' element={<ProfileProfileDetail/>} />
-          <Route path='/producer-dashboard/:jobId' element={<ProducerPostDetail/>} />
+          <Route path='/profile/:username' element={<ProfileProfileDetail/>} />
+          <Route path='/job/:jobId' element={<PostDetail/>} />
 
       </Routes>
     </Router>

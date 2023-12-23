@@ -40,7 +40,7 @@ const ProducerDashboard = () => {
             }
         })
         .then((response) => {
-            setMyJobPosts((prevJobs) => [response.data, ...prevJobs]);
+            setMyJobPosts((prevJobs) => [...prevJobs, response.data]);
 
             setTitle('');
             setDescription('');
@@ -97,7 +97,7 @@ const ProducerDashboard = () => {
     }, [])
 
     const handleProfileClick = () => {
-        navigate(`/producer-dashboard/profile/${username}`)
+        navigate(`/profile/${username}`)
     }
 
     const handleLogout = () => {
@@ -138,8 +138,17 @@ const ProducerDashboard = () => {
                                 myJobPosts.map((job, index) => {
                                     return (
                                         <div className='producer_dash_job_card' key={job._id}>
-                                            <span>{job.title}</span>
-                                            <button onClick={() => navigate(`/producer-dashboard/${job._id}`)}>View</button>
+                                            <div className='producer_dash_job_card_top'>
+                                                <span>{job.title}</span>
+                                            </div>
+                                            <div className='producer_dash_job_card_bottom'>
+                                                <div className='producer_dash_job_card_bottom_left'>
+                                                    <span>{job.employmentType}, {job.location}</span>
+                                                </div>
+                                                <div className='producer_dash_job_card_bottom_right'>
+                                                <button onClick={() => navigate(`/job/${job._id}`)}>View</button>
+                                                </div>
+                                            </div>
                                         </div>
                                     )
                                 })

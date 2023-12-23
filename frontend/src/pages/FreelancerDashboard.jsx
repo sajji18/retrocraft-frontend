@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router';
 import axios from 'axios';
 import '../static/css/pages/FreelancerDashboard.css';
+import '../static/css/pages/ProducerDashboard.css';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 // Using this until i use an actual api to fetch blogs online
@@ -54,6 +55,7 @@ const connectionRequestsData = [
 
 const FreelancerDashboard = () => {
     const [userRole, setUserRole] = useState(localStorage.getItem("role"));
+    const [username, setUsername] = useState('');
     const [token, setToken] = useState(localStorage.getItem("token"));
     const navigate = useNavigate();
 
@@ -74,6 +76,7 @@ const FreelancerDashboard = () => {
             const role = response.data.user.payload.role;
             localStorage.setItem("role", role);
             setUserRole(role)
+            setUsername(response.data.user.payload.username);
         })
         .catch(error => {
             // console.log(error.response.data)
@@ -103,7 +106,7 @@ const FreelancerDashboard = () => {
     console.log(jobPosts)
 
     const handleProfileClick = () => {
-
+        navigate(`/profile/${username}`)
     }
 
     const handleLogout = () => {
@@ -143,8 +146,18 @@ const FreelancerDashboard = () => {
                             { 
                                 jobPosts.map((job, index) => {
                                     return (
-                                        <div className='freelancer_dash_job_card' key={job._id}>
-                                            <span>{job.title}</span>
+                                        <div className='producer_dash_job_card' key={job._id}>
+                                            <div className='producer_dash_job_card_top'>
+                                                <span>{job.title}</span>
+                                            </div>
+                                            <div className='producer_dash_job_card_bottom'>
+                                                <div className='producer_dash_job_card_bottom_left'>
+                                                    <span>{job.employmentType}, {job.location}</span>
+                                                </div>
+                                                <div className='producer_dash_job_card_bottom_right'>
+                                                <button onClick={() => navigate(`/job/${job._id}`)}>View</button>
+                                                </div>
+                                            </div>
                                         </div>
                                     )
                                 })
