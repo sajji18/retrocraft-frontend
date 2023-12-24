@@ -1,3 +1,5 @@
+/* FOR THE PRODUCER WHOSE JOB POST IT IS */
+
 .post_detail_main_area {
     display: flex;
     justify-content: center;
@@ -214,4 +216,105 @@
     color: white;
     border-radius: 0.5rem;
     border: none;
+}
+
+/* FOR OTHER FREELANCER OR PRODUCERS WHO ARE HAVING READ ONLY ACCESS */
+.general_post_detail_heading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.general_post_detail_description {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    margin: 0.5rem 0rem;
+}
+
+.general_post_detail_description h2 {
+    margin: 0.25rem 0;
+}
+
+.general_post_detail_description span {
+    font-size: 1.25rem;
+    margin: 0.25rem 0;
+}
+
+.general_post_detail_requirements {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    margin: 0.5rem 0rem;
+}
+
+.general_post_detail_requirements ul {
+    font-size: 1.25rem;
+    margin: 0.25rem 0;
+}
+
+.general_post_detail_requirements ul li {
+    margin: 0.1rem 1rem;
+}
+
+.general_post_detail_skills {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    margin: 0.5rem 0rem;
+}
+
+.general_post_detail_skills ul {
+    font-size: 1.25rem;
+    margin: 0.25rem 0;
+}
+
+.general_post_detail_skills ul li {
+    margin: 0.1rem 1rem;
+}
+
+.general_post_detail_miscellaneous {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    margin: 0.5rem 0rem;
+}
+
+.general_post_detail_miscellaneous h2 {
+    margin: 0.25rem 0;
+}
+
+.general_post_detail_miscellaneous span {
+    font-size: 1.25rem;
+    margin: 0.25rem 0;
+}
+
+.general_post_detail_apply {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.general_post_detail_apply button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 7px;
+    width: 5rem;
+    padding: 0.75rem 3.25rem;
+    font-size: 1.125rem;
+    font-weight: bold;
+    cursor: pointer;
+    color: white;
+    background-color: rgb(238, 60, 90);
+    border: 0;
+    border-radius: 0.75rem;
+}
+
+.general_post_detail_apply button:hover {
+    background-color: #ec7694;
+    cursor: pointer;
 }

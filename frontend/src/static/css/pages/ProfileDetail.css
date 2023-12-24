@@ -1,0 +1,28 @@
+.profile_detail_main_area {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 95vh;
+    transform: translateY(3.5%);
+}
+
+.profile_detail_photo {
+    background-color: grey;
+    width: 20%;
+    height: 32.5%;
+    border-top-left-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+}
+
+.profile_detail_form {
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+    height: 80%;
+    overflow-y: auto;
+    background-color: red;
+    border-bottom-right-radius: 1rem;
+    border-top-right-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+    padding: 2rem;
+}

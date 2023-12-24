@@ -11,6 +11,7 @@ const Landing = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        // ----------------- FETCHING USER DETAILS LIKE ROLE AND USERNAME -----------------
         axios.get('http://localhost:3000/details', {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -37,6 +38,7 @@ const Landing = () => {
     }, [userRole, token]);
     console.log(token)
 
+    
     if (token === null) {
         return (
             <div className="landing_container">

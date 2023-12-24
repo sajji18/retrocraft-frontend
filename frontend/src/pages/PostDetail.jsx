@@ -13,8 +13,11 @@ const PostDetail = () => {
 
     const { jobId } = useParams();
     const [selectedJobData, setSelectedJobData] = useState({})
+    const [selectedJobProducer, setSelectedJobProducer] = useState({})
     const [producerId, setProducerId] = useState(null);
 
+
+    // ------------UPDATE JOB BY THE OWNER OF THE JOB POST----------------
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [requirements, setRequirements] = useState(['']);
@@ -51,6 +54,7 @@ const PostDetail = () => {
         });
     }
 
+    // ------------GET DETAILS OF THE CURRENT USER----------------
     useEffect(() => {
         axios.get('http://localhost:3000/details', {
             headers: {
@@ -70,31 +74,32 @@ const PostDetail = () => {
         });
     }, []);
 
+    // ------------GET DETAILS OF THE SELECTED JOB POST----------------
     useEffect(() => {
-        if (userRole === 'PRODUCER') {
-            axios
-            .get(`http://localhost:3000/producer/jobs/${jobId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-            })
-            .then(response => {
-                console.log(response.data)
-                setSelectedJobData(response.data)
-                setTitle(response.data.title)
-                setDescription(response.data.description)
-                setRequirements(response.data.requirements)
-                setSkillsRequired(response.data.skillsRequired)
-                setEmploymentType(response.data.employmentType)
-                setLocation(response.data.location)
-                setSalary(response.data.salary)
-            })
-            .catch(error => {
-                console.error('Error fetching user data:', error);
-            });
+        axios
+        .get(`http://localhost:3000/producer/jobs/${jobId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
         }
+        })
+        .then(response => {
+            console.log(response.data)
+            setSelectedJobData(response.data.job)
+            setSelectedJobProducer(response.data.producer)
+            setTitle(response.data.job.title)
+            setDescription(response.data.job.description)
+            setRequirements(response.data.job.requirements)
+            setSkillsRequired(response.data.job.skillsRequired)
+            setEmploymentType(response.data.job.employmentType)
+            setLocation(response.data.job.location)
+            setSalary(response.data.job.salary)
+        })
+        .catch(error => {
+            console.error('Error fetching user data:', error);
+        });
     }, []);
 
+    // ------------GET PRODUCER ID FOR CONDITIONAL RENDERING PURPOSES----------------
     useEffect(() => {
         if (userRole === 'PRODUCER') {
             axios
@@ -127,17 +132,25 @@ const PostDetail = () => {
         }
     }, []);
 
-    console.log(message)
+    // console.log(message)
 
+    // ------------PROFILE ICON CLICK----------------
     const handleProfileClick = () => {
         navigate(`/profile/${username}`)
     }
 
+    // ------------FREELANCER APPLY CLICK CONTROLLER----------------
+    const handleFreelancerApply = () => {
+
+    }
+
+    // ------------LOGOUT CLICK----------------
     const handleLogout = () => {
         localStorage.clear();
         navigate("/");
     }
 
+    // ------------IF TOKEN NULL, THEN USER UNAUTHENTICATED----------------
     if (token === null) {
         return (
             <div>
@@ -146,15 +159,25 @@ const PostDetail = () => {
         )
     }
 
+    // ------------IF USER IS PRODUCER AND JOB POST IS NOT CREATED BY HIM OR USER IS FREELANCER WHO CAN APPLY----------------
     else if ((userRole === 'PRODUCER' && selectedJobData.producer !== producerId) || (userRole === 'FREELANCER')) {
         return (
             <>
                 <div className='producer_navbar_container'>
                     <div className='producer_navbar_left'>
-                        <a href='/producer-dashboard'>
-                            <span className='producer_nav_span_1'>Retrocraft</span>
-                            <span className='producer_nav_span_2'>Hub</span>
-                        </a>
+                        {
+                            userRole === 'PRODUCER' ? (
+                                <a href='/producer-dashboard'>
+                                    <span className='producer_nav_span_1'>Retrocraft</span>
+                                    <span className='producer_nav_span_2'>Hub</span>
+                                </a>
+                            ) : (
+                                <a href='/freelancer-dashboard'>
+                                    <span className='producer_nav_span_1'>Retrocraft</span>
+                                    <span className='producer_nav_span_2'>Hub</span>
+                                </a>
+                            )
+                        }
                     </div>
                     <div className='producer_navbar_right'>
                         <button className='producer_profile_button' onClick={handleProfileClick}><AccountCircleIcon style={{ fontSize: '2rem' }}/></button>
@@ -163,13 +186,63 @@ const PostDetail = () => {
                 </div>
                 <div className='post_detail_main_area'>
                     <div className='post_detail_form'>
-                        
+                        <div className='general_post_detail_heading'>
+                            <h1>{selectedJobData.title}</h1>
+                        </div>
+                        <div className='general_post_detail_description'>
+                            <h2>Description</h2>
+                            <span>{selectedJobData.description}</span>
+                        </div>
+                        <div className='general_post_detail_requirements'>
+                            <h2>Requirements</h2>
+                            {
+                                requirements.map((requirement, index) => {
+                                    return (
+                                        <ul key={index}>
+                                            <li>{requirement}</li> 
+                                        </ul>
+                                    )
+                                })
+                            }
+                        </div>
+                        <div className='general_post_detail_skills'>
+                            <h2>Skills Required</h2>
+                            {
+                                skillsRequired.map((skill, index) => {
+                                    return (
+                                        <ul key={index}>
+                                            <li>{skill}</li> 
+                                        </ul>
+                                    )
+                                })
+                            }
+                        </div>
+                        <div className='general_post_detail_miscellaneous'>
+                            <h2>Employment Type</h2>
+                            <span>This is a {selectedJobData.employmentType} Job Opportunity</span>
+                        </div>
+                        <div className='general_post_detail_miscellaneous'>
+                            <h2>Work Location</h2>
+                            <span>The Job is {selectedJobData.location} Based</span>
+                        </div>
+                        <div className='general_post_detail_miscellaneous'>
+                            <h2>Salary</h2>
+                            <span>Monthly Base Salary {selectedJobData.salary} + Incentives</span>
+                        </div>
+                        {
+                            userRole === 'FREELANCER' ? (
+                                <div className='general_post_detail_apply'>
+                                    <button onClick={handleFreelancerApply}>Apply</button>
+                                </div>
+                            ) : (<></>)
+                        }
                     </div>
                 </div>
             </>
         )
     }
 
+    // ------------IF USER IS PRODUCER AND JOB POST IS CREATED BY HIM----------------
     else if (userRole === 'PRODUCER' && selectedJobData.producer === producerId) {
         return (
             <>

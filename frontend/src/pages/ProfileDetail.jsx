@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router';
 import axios from 'axios';
+import '../static/css/pages/ProducerDashboard.css';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import '../static/css/pages/ProfileDetail.css';
 
-const ProfileProfileDetail = () => {
+const ProfileDetail = () => {
     const [userRole, setUserRole] = useState(localStorage.getItem("role"));
     const [token, setToken] = useState(localStorage.getItem("token"));
     const navigate = useNavigate();
@@ -62,6 +65,15 @@ const ProfileProfileDetail = () => {
         
     }, []);
 
+    const handleProfileClick = () => {
+        navigate(`/profile/${username}`)
+    }
+
+    const handleLogout = () => {
+        localStorage.clear();
+        navigate("/");
+    }
+
     if (token === null) {
         return (
             <div>
@@ -72,7 +84,28 @@ const ProfileProfileDetail = () => {
     else {
         if ((userRole === 'PRODUCER' && username === userDetails.username) || (userRole === 'FREELANCER' && username === userDetails.username)) {
             return (
-                <div>Profile: {userDetails.username} {userDetails.role} {userDetails.email}</div>
+                <>
+                    <div className='producer_navbar_container'>
+                        <div className='producer_navbar_left'>
+                            <a href='/producer-dashboard'>
+                                <span className='producer_nav_span_1'>Retrocraft</span>
+                                <span className='producer_nav_span_2'>Hub</span>
+                            </a>
+                        </div>
+                        <div className='producer_navbar_right'>
+                            <button className='producer_profile_button' onClick={handleProfileClick}><AccountCircleIcon style={{ fontSize: '2rem' }}/></button>
+                            <button className='producer_navbar_logout' onClick={handleLogout}>Logout</button>
+                        </div>
+                    </div>
+                    <div className='profile_detail_main_area'>
+                        <div className='profile_detail_photo'>
+                            
+                        </div>
+                        <div className='profile_detail_form'>
+
+                        </div>
+                    </div>
+                </>
             )
         }
         else if ((userRole === 'PRODUCER' && username !== userDetails.username) || (userRole === 'FREELANCER' && username !== userDetails.username)){
@@ -81,4 +114,4 @@ const ProfileProfileDetail = () => {
     }
 }
 
-export default ProfileProfileDetail
+export default ProfileDetail

@@ -65,8 +65,8 @@ const FreelancerDashboard = () => {
     const [appliedJob, setAppliedJobs] = useState([]);
 
     useEffect(() => {
-        axios
-        .get('http://localhost:3000/details', {
+        // ----------------- FETCHING USER DETAILS LIKE ROLE AND USERNAME -----------------
+        axios.get('http://localhost:3000/details', {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -82,14 +82,14 @@ const FreelancerDashboard = () => {
             // console.log(error.response.data)
             console.error('Error fetching user data:', error);
         });
-        if (userRole === 'PRODUCER') {
-            navigate("/producer-dashboard");
-        }
-    }, []);
 
-    useEffect(() => {
-        axios
-        .get('http://localhost:3000/freelancer/get-job-posts', {
+        // ----------------- ONLY FREELANCERS CAN ACCESS THE FREELANCER DASHBOARD -----------------
+        if (userRole === 'PRODUCER') {
+            navigate("/");
+        }
+
+        // ----------------- FETCHING THE JOBS TO SHOW ON THE DASHBOARD -----------------
+        axios.get('http://localhost:3000/freelancer/get-job-posts', {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -101,19 +101,22 @@ const FreelancerDashboard = () => {
         .catch(error => {
             console.error('Error fetching user data:', error);
         });
-    }, [])
+    }, []);
 
     console.log(jobPosts)
 
+    // ----------------- HANDLING THE PROFILE BUTTON CLICK -----------------
     const handleProfileClick = () => {
         navigate(`/profile/${username}`)
     }
 
+    // ----------------- HANDLING THE LOGOUT BUTTON CLICK -----------------
     const handleLogout = () => {
         localStorage.clear();
         navigate("/");
     }
 
+    // ----------------- FOR UNAUTHORIZED USERS -----------------
     if (token === null) {
         return (
             <div>
@@ -122,6 +125,7 @@ const FreelancerDashboard = () => {
         )
     }
 
+    // ----------------- FOR AUTHORIZED USERS FURTHER BETWEEN FREELANCERS AND PRODUCERS -----------------
     else if (userRole === 'FREELANCER') {
         return (
             <>
