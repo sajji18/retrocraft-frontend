@@ -16,6 +16,7 @@ const PostDetail = () => {
     const [selectedJobProducer, setSelectedJobProducer] = useState({})
     const [producerId, setProducerId] = useState(null);
 
+    const [applied, setApplied] = useState(false);
 
     // ------------UPDATE JOB BY THE OWNER OF THE JOB POST----------------
     const [title, setTitle] = useState('');
@@ -99,7 +100,7 @@ const PostDetail = () => {
         });
     }, []);
 
-    // ------------GET PRODUCER ID FOR CONDITIONAL RENDERING PURPOSES----------------
+    // ------------GET PRODUCER ID FOR CONDITIONAL RENDERING PURPOSES OR FREELANCER INFO FOR APPLYING PURPOSES----------------
     useEffect(() => {
         if (userRole === 'PRODUCER') {
             axios
@@ -129,6 +130,19 @@ const PostDetail = () => {
             .catch(error => {
                 console.error('Error fetching user data:', error);
             });
+
+            axios.get(`http://localhost:3000/freelancer/job/apply/${jobId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            .then((response) => {
+                console.log(response.data)
+                setApplied(response.data.applied)
+            })
+            .catch((error) => {
+                console.error('Error fetching user data:', error);
+            });
         }
     }, []);
 
@@ -141,7 +155,35 @@ const PostDetail = () => {
 
     // ------------FREELANCER APPLY CLICK CONTROLLER----------------
     const handleFreelancerApply = () => {
+        axios
+        .post(`http://localhost:3000/freelancer/job/apply/${jobId}`, {}, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            console.log(response.data)
+            setApplied(true)
+        })
+        .catch(error => {
+            console.error('Error fetching user data:', error);
+        });
+    }
 
+    const handleFreelancerUnApply = () => { 
+        axios
+        .delete(`http://localhost:3000/freelancer/job/apply/${jobId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            console.log(response.data)
+            setApplied(false)
+        })
+        .catch(error => {
+            console.error('Error fetching user data:', error);
+        });
     }
 
     // ------------LOGOUT CLICK----------------
@@ -230,11 +272,22 @@ const PostDetail = () => {
                             <span>Monthly Base Salary {selectedJobData.salary} + Incentives</span>
                         </div>
                         {
-                            userRole === 'FREELANCER' ? (
-                                <div className='general_post_detail_apply'>
-                                    <button onClick={handleFreelancerApply}>Apply</button>
-                                </div>
-                            ) : (<></>)
+                            userRole === 'FREELANCER' ?
+                            (
+                                !applied ? (
+                                    <div className='general_post_detail_apply'>
+                                        <button onClick={handleFreelancerApply}>Apply</button>
+                                    </div>
+                                ) 
+                                :
+                                (
+                                    <div className='general_post_detail_apply'>
+                                        <button style={{ marginRight: '2rem', backgroundColor: '#ec7694' }}>Applied</button>
+                                        <button onClick={handleFreelancerUnApply}>UnApply</button>
+                                    </div>
+                                )
+                            )
+                            : (<></>)
                         }
                     </div>
                 </div>

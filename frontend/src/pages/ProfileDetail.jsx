@@ -114,4 +114,4 @@ const ProfileDetail = () => {
     }
 }
 
-export default ProfileDetail
+export default ProfileDetail;
