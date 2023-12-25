@@ -4,6 +4,7 @@ import axios from 'axios';
 import '../static/css/pages/FreelancerDashboard.css';
 import '../static/css/pages/ProducerDashboard.css';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import Loading from '../components/Loading';
 
 // Using this until i use an actual api to fetch blogs online
 // (Since number of requests per day are limited :D)
@@ -60,9 +61,13 @@ const FreelancerDashboard = () => {
     const navigate = useNavigate();
 
     // States for dynamic rendering
+    const [appliedJobPosts, setAppliedJobPosts] = useState([]);
     const [jobPosts, setJobPosts] = useState([]);
     const [connectionRequests, setConnectionRequest] = useState([]);
     const [appliedJob, setAppliedJobs] = useState([]);
+
+    // HATE SEEING THE SPLIT SECOND FLASHES
+    const [loading, setLoading] = useState(true); 
 
     useEffect(() => {
         // ----------------- FETCHING USER DETAILS LIKE ROLE AND USERNAME -----------------
@@ -103,7 +108,22 @@ const FreelancerDashboard = () => {
         });
     }, []);
 
-    console.log(jobPosts)
+    useEffect(() => {
+        // ----------------- FETCHING THE APPLIED JOBS TO SHOW ON THE DASHBOARD -----------------
+        axios.get('http://localhost:3000/freelancer/get-applied-job-posts', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            console.log(response.data)
+            setAppliedJobPosts(response.data)
+            setLoading(false)
+        })
+        .catch(error => {
+            console.error('Error fetching user data:', error);
+        });
+    }, [])
 
     // ----------------- HANDLING THE PROFILE BUTTON CLICK -----------------
     const handleProfileClick = () => {
@@ -115,6 +135,8 @@ const FreelancerDashboard = () => {
         localStorage.clear();
         navigate("/");
     }
+
+    // console.log(appliedJobPosts)
 
     // ----------------- FOR UNAUTHORIZED USERS -----------------
     if (token === null) {
@@ -148,23 +170,37 @@ const FreelancerDashboard = () => {
                         </div>
                         <div className='freelancer_dash_main_posts'>
                             { 
-                                jobPosts.map((job, index) => {
-                                    return (
-                                        <div className='producer_dash_job_card' key={job._id}>
-                                            <div className='producer_dash_job_card_top'>
-                                                <span>{job.title}</span>
-                                            </div>
-                                            <div className='producer_dash_job_card_bottom'>
-                                                <div className='producer_dash_job_card_bottom_left'>
-                                                    <span>{job.employmentType}, {job.location}</span>
+                                jobPosts.length ? 
+                                (
+                                    jobPosts.map((job, index) => {
+                                        return (
+                                            <div className='producer_dash_job_card' key={job._id}>
+                                                <div className='producer_dash_job_card_top'>
+                                                    <span>{job.title}</span>
                                                 </div>
-                                                <div className='producer_dash_job_card_bottom_right'>
-                                                <button onClick={() => navigate(`/job/${job._id}`)}>View</button>
+                                                <div className='producer_dash_job_card_bottom'>
+                                                    <div className='producer_dash_job_card_bottom_left'>
+                                                        <span>{job.employmentType}, {job.location}</span>
+                                                    </div>
+                                                    <div className='producer_dash_job_card_bottom_right'>
+                                                    <button onClick={() => navigate(`/job/${job._id}`)}>View</button>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        )
+                                    })
+                                )
+                                :
+                                (
+                                    loading ? 
+                                    (
+                                        <div style={{ height: '100%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}><Loading /></div>
                                     )
-                                })
+                                    :
+                                    (
+                                        <div>No Job Posts Yet</div>
+                                    )
+                                )
                             }
                         </div>
                     </div>
@@ -180,7 +216,29 @@ const FreelancerDashboard = () => {
                             <span>Applied Jobs</span>
                         </div>
                         <div className='freelancer_dash_main_requests'>
-
+                            {
+                                appliedJobPosts.length ?
+                                (
+                                    appliedJobPosts.map((elem, index) => {
+                                        return (
+                                            <div className='freelancer_dash_applied_jobs_cards' key={elem._id}>
+                                                {elem.title}
+                                            </div>
+                                        )
+                                    })
+                                )
+                                :
+                                (
+                                    loading ?
+                                    (
+                                        <div style={{ height: '100%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}><Loading /></div>
+                                    )
+                                    :
+                                    (
+                                        <div>No Applied Jobs Yet</div>
+                                    )
+                                )
+                            }
                         </div>
                         <div className='freelancer_dash_main_right_head'>
                             <span>Blogs You Might Like:</span>

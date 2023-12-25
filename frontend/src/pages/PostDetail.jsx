@@ -4,6 +4,7 @@ import axios from 'axios';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import '../static/css/pages/PostDetail.css';
 import '../static/css/pages/ProducerDashboard.css';
+import Loading from '../components/Loading';
 
 const PostDetail = () => {
     const [userRole, setUserRole] = useState(localStorage.getItem("role"));
@@ -15,6 +16,8 @@ const PostDetail = () => {
     const [selectedJobData, setSelectedJobData] = useState({})
     const [selectedJobProducer, setSelectedJobProducer] = useState({})
     const [producerId, setProducerId] = useState(null);
+
+    const [loading, setLoading] = useState(true)
 
     const [applied, setApplied] = useState(false);
 
@@ -94,6 +97,7 @@ const PostDetail = () => {
             setEmploymentType(response.data.job.employmentType)
             setLocation(response.data.job.location)
             setSalary(response.data.job.salary)
+            setLoading(false)
         })
         .catch(error => {
             console.error('Error fetching user data:', error);
@@ -205,92 +209,104 @@ const PostDetail = () => {
     else if ((userRole === 'PRODUCER' && selectedJobData.producer !== producerId) || (userRole === 'FREELANCER')) {
         return (
             <>
-                <div className='producer_navbar_container'>
-                    <div className='producer_navbar_left'>
-                        {
-                            userRole === 'PRODUCER' ? (
-                                <a href='/producer-dashboard'>
-                                    <span className='producer_nav_span_1'>Retrocraft</span>
-                                    <span className='producer_nav_span_2'>Hub</span>
-                                </a>
-                            ) : (
-                                <a href='/freelancer-dashboard'>
-                                    <span className='producer_nav_span_1'>Retrocraft</span>
-                                    <span className='producer_nav_span_2'>Hub</span>
-                                </a>
-                            )
-                        }
-                    </div>
-                    <div className='producer_navbar_right'>
-                        <button className='producer_profile_button' onClick={handleProfileClick}><AccountCircleIcon style={{ fontSize: '2rem' }}/></button>
-                        <button className='producer_navbar_logout' onClick={handleLogout}>Logout</button>
-                    </div>
-                </div>
-                <div className='post_detail_main_area'>
-                    <div className='post_detail_form'>
-                        <div className='general_post_detail_heading'>
-                            <h1>{selectedJobData.title}</h1>
-                        </div>
-                        <div className='general_post_detail_description'>
-                            <h2>Description</h2>
-                            <span>{selectedJobData.description}</span>
-                        </div>
-                        <div className='general_post_detail_requirements'>
-                            <h2>Requirements</h2>
-                            {
-                                requirements.map((requirement, index) => {
-                                    return (
-                                        <ul key={index}>
-                                            <li>{requirement}</li> 
-                                        </ul>
-                                    )
-                                })
-                            }
-                        </div>
-                        <div className='general_post_detail_skills'>
-                            <h2>Skills Required</h2>
-                            {
-                                skillsRequired.map((skill, index) => {
-                                    return (
-                                        <ul key={index}>
-                                            <li>{skill}</li> 
-                                        </ul>
-                                    )
-                                })
-                            }
-                        </div>
-                        <div className='general_post_detail_miscellaneous'>
-                            <h2>Employment Type</h2>
-                            <span>This is a {selectedJobData.employmentType} Job Opportunity</span>
-                        </div>
-                        <div className='general_post_detail_miscellaneous'>
-                            <h2>Work Location</h2>
-                            <span>The Job is {selectedJobData.location} Based</span>
-                        </div>
-                        <div className='general_post_detail_miscellaneous'>
-                            <h2>Salary</h2>
-                            <span>Monthly Base Salary {selectedJobData.salary} + Incentives</span>
-                        </div>
-                        {
-                            userRole === 'FREELANCER' ?
-                            (
-                                !applied ? (
-                                    <div className='general_post_detail_apply'>
-                                        <button onClick={handleFreelancerApply}>Apply</button>
+                {
+                    loading ?
+                    (
+                        <Loading />
+                    )
+                    :
+                    (   
+                        <>    
+                            <div className='producer_navbar_container'>
+                                <div className='producer_navbar_left'>
+                                    {
+                                        userRole === 'PRODUCER' ? (
+                                            <a href='/producer-dashboard'>
+                                                <span className='producer_nav_span_1'>Retrocraft</span>
+                                                <span className='producer_nav_span_2'>Hub</span>
+                                            </a>
+                                        ) : (
+                                            <a href='/freelancer-dashboard'>
+                                                <span className='producer_nav_span_1'>Retrocraft</span>
+                                                <span className='producer_nav_span_2'>Hub</span>
+                                            </a>
+                                        )
+                                    }
+                                </div>
+                                <div className='producer_navbar_right'>
+                                    <button className='producer_profile_button' onClick={handleProfileClick}><AccountCircleIcon style={{ fontSize: '2rem' }}/></button>
+                                    <button className='producer_navbar_logout' onClick={handleLogout}>Logout</button>
+                                </div>
+                            </div>
+                            <div className='post_detail_main_area'>
+                                <div className='post_detail_form'>
+                                    <div className='general_post_detail_heading'>
+                                        <h1>{selectedJobData.title}</h1>
                                     </div>
-                                ) 
-                                :
-                                (
-                                    <div className='general_post_detail_apply'>
-                                        <button style={{ marginRight: '2rem', backgroundColor: '#ec7694' }}>Applied</button>
-                                        <button onClick={handleFreelancerUnApply}>UnApply</button>
+                                    <div className='general_post_detail_description'>
+                                        <h2>Description</h2>
+                                        <span>{selectedJobData.description}</span>
                                     </div>
-                                )
-                            )
-                            : (<></>)
-                        }
-                    </div>
-                </div>
+                                    <div className='general_post_detail_requirements'>
+                                        <h2>Requirements</h2>
+                                        {
+                                            requirements.map((requirement, index) => {
+                                                return (
+                                                    <ul key={index}>
+                                                        <li>{requirement}</li> 
+                                                    </ul>
+                                                )
+                                            })
+                                        }
+                                    </div>
+                                    <div className='general_post_detail_skills'>
+                                        <h2>Skills Required</h2>
+                                        {
+                                            skillsRequired.map((skill, index) => {
+                                                return (
+                                                    <ul key={index}>
+                                                        <li>{skill}</li> 
+                                                    </ul>
+                                                )
+                                            })
+                                        }
+                                    </div>
+                                    <div className='general_post_detail_miscellaneous'>
+                                        <h2>Employment Type</h2>
+                                        <span>This is a {selectedJobData.employmentType} Job Opportunity</span>
+                                    </div>
+                                    <div className='general_post_detail_miscellaneous'>
+                                        <h2>Work Location</h2>
+                                        <span>The Job is {selectedJobData.location} Based</span>
+                                    </div>
+                                    <div className='general_post_detail_miscellaneous'>
+                                        <h2>Salary</h2>
+                                        <span>Monthly Base Salary {selectedJobData.salary} + Incentives</span>
+                                    </div>
+                                    {
+                                        userRole === 'FREELANCER' ?
+                                        (
+                                            !applied ? (
+                                                <div className='general_post_detail_apply'>
+                                                    <button onClick={handleFreelancerApply}>Apply</button>
+                                                </div>
+                                            ) 
+                                            :
+                                            (
+                                                <div className='general_post_detail_apply'>
+                                                    <button style={{ marginRight: '2rem', backgroundColor: '#ec7694' }}>Applied</button>
+                                                    <button onClick={handleFreelancerUnApply}>UnApply</button>
+                                                </div>
+                                            )
+                                        )
+                                        : (<></>)
+                                    }
+                                </div>
+                            </div>
+                        </>
+                    )
+                }
+                
             </>
         )
     }

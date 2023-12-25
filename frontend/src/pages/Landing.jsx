@@ -1,14 +1,23 @@
-import Navbar from "../components/Navbar"
+import Navbar from "../components/Navbar";
 import '../static/css/pages/Landing.css';
-import Signin from "../components/FreelancerSignin";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Loading from '../components/Loading';
+import {useTypewriter , Cursor} from 'react-simple-typewriter'
 
 const Landing = () => {
     const [userRole, setUserRole] = useState(localStorage.getItem("role"));
     const [token, setToken] = useState(localStorage.getItem("token"));
     const navigate = useNavigate();
+
+    const [text] = useTypewriter(
+        {
+            words:['Crafting Innovations', 'Cultivating Dreams'],
+            loop:{},
+            typeSpeed:200,
+        }
+    )
 
     useEffect(() => {
         // ----------------- FETCHING USER DETAILS LIKE ROLE AND USERNAME -----------------
@@ -42,18 +51,35 @@ const Landing = () => {
     if (token === null) {
         return (
             <div className="landing_container">
-                {/* <img src="../../public/background2.png" alt="Error Fetching Image" /> */}
+                <img src="../../public/BackgroundNew.jpg" alt="Error Fetching Image" />
                 <Navbar></Navbar>
     
-                {/* <div className="signin-container">
-                    <span className="landing_span">Bridging the Gap to New Opportunities</span>
-                    <Signin />
-                </div>  */}
+                <div className="content-container">
+                    <div className="text-container">
+                        <div className="main_heading">
+                            <h1>Bridging the Gap Between</h1>
+                            <h1>Dreams and Reality</h1>
+                        </div>
+                        <h2><span>{text}</span><span><Cursor cursorStyle="|"/></span></h2>
+                    </div>
+                </div>
             </div>
         )
     }
     else {
-        return <h1>...Loading</h1>
+        return (
+            <div 
+            style={{ 
+                width: '100%', 
+                height: '100%', 
+                display: 'flex', 
+                justifyContent: 'center', 
+                alignItems: 'center' 
+                }}
+            >
+                <Loading />
+            </div>
+        )
     }
 }
 
