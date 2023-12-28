@@ -193,3 +193,9 @@ body {
     padding: 1rem;
     margin: 0rem 0.25rem;
 }
+
+.freelancer_dash_applied_jobs_cards:hover {
+    background-color: #8DD7AB;
+    color: #FAFBFD;
+    cursor: pointer;
+}

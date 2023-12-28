@@ -137,7 +137,7 @@ const ProducerDashboard = () => {
                             { 
                                 myJobPosts.map((job, index) => {
                                     return (
-                                        <div className='producer_dash_job_card' key={job._id}>
+                                        <div className='producer_dash_job_card' key={job._id} onClick={() => navigate(`/job/${job._id}`)}>
                                             <div className='producer_dash_job_card_top'>
                                                 <span>{job.title}</span>
                                             </div>
@@ -146,7 +146,7 @@ const ProducerDashboard = () => {
                                                     <span>{job.employmentType}, {job.location}</span>
                                                 </div>
                                                 <div className='producer_dash_job_card_bottom_right'>
-                                                    <button onClick={() => navigate(`/job/${job._id}`)}>View</button>
+                                                    {/* <button onClick={() => navigate(`/job/${job._id}`)}>View</button> */}
                                                 </div>
                                             </div>
                                         </div>

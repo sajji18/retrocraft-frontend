@@ -174,7 +174,7 @@ const FreelancerDashboard = () => {
                                 (
                                     jobPosts.map((job, index) => {
                                         return (
-                                            <div className='producer_dash_job_card' key={job._id}>
+                                            <div className='producer_dash_job_card' key={job._id} onClick={() => navigate(`/job/${job._id}`)}>
                                                 <div className='producer_dash_job_card_top'>
                                                     <span>{job.title}</span>
                                                 </div>
@@ -183,7 +183,9 @@ const FreelancerDashboard = () => {
                                                         <span>{job.employmentType}, {job.location}</span>
                                                     </div>
                                                     <div className='producer_dash_job_card_bottom_right'>
-                                                    <button onClick={() => navigate(`/job/${job._id}`)}>View</button>
+                                                    {/* <button onClick={() => navigate(`/job/${job._id}`)}>View</button> */}
+                                                        <span>Posted By {job.producer.username}</span>
+                                                        <span>On {new Date(job.postedDate).toLocaleString()}</span>
                                                     </div>
                                                 </div>
                                             </div>

@@ -14,7 +14,7 @@ const PostDetail = () => {
 
     const { jobId } = useParams();
     const [selectedJobData, setSelectedJobData] = useState({})
-    const [selectedJobProducer, setSelectedJobProducer] = useState({})
+    // const [selectedJobProducer, setSelectedJobProducer] = useState({})
     const [producerId, setProducerId] = useState(null);
 
     const [loading, setLoading] = useState(true)
@@ -89,7 +89,8 @@ const PostDetail = () => {
         .then(response => {
             console.log(response.data)
             setSelectedJobData(response.data.job)
-            setSelectedJobProducer(response.data.producer)
+            // setSelectedJobProducer(response.data.producer)
+            setProducerId(response.data.job.producer)
             setTitle(response.data.job.title)
             setDescription(response.data.job.description)
             setRequirements(response.data.job.requirements)
@@ -115,7 +116,7 @@ const PostDetail = () => {
             })
             .then(response => {
                 console.log(response.data)
-                setProducerId(response.data._id)
+                // setProducerId(response.data._id)
             })
             .catch(error => {
                 console.error('Error fetching user data:', error);
@@ -195,6 +196,7 @@ const PostDetail = () => {
         localStorage.clear();
         navigate("/");
     }
+    console.log(selectedJobData)
 
     // ------------IF TOKEN NULL, THEN USER UNAUTHENTICATED----------------
     if (token === null) {
@@ -242,6 +244,7 @@ const PostDetail = () => {
                                 <div className='post_detail_form'>
                                     <div className='general_post_detail_heading'>
                                         <h1>{selectedJobData.title}</h1>
+                                        <span style={{ fontSize: '1.25rem' }}>Posted By <a href={`/profile/${selectedJobData.producer.username}`}>{selectedJobData.producer.username}</a></span>
                                     </div>
                                     <div className='general_post_detail_description'>
                                         <h2>Description</h2>

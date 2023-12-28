@@ -51,16 +51,16 @@ const Landing = () => {
     if (token === null) {
         return (
             <div className="landing_container">
-                <img src="../../public/BackgroundNew.jpg" alt="Error Fetching Image" />
+                <img src="../../BackgroundNew.jpg" alt="Error Fetching Image" />
                 <Navbar></Navbar>
     
                 <div className="content-container">
                     <div className="text-container">
                         <div className="main_heading">
-                            <h1>Bridging the Gap Between</h1>
-                            <h1>Dreams and Reality</h1>
+                            <h1 className="landing_text">Bridging the Gap Between</h1>
+                            <h1 className="landing_text">Dreams and Reality</h1>
                         </div>
-                        <h2><span>{text}</span><span><Cursor cursorStyle="|"/></span></h2>
+                        <h2 className="landing_typewrited_text"><span>{text}</span><span><Cursor cursorStyle="|"/></span></h2>
                     </div>
                 </div>
             </div>

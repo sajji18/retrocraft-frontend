@@ -24,19 +24,20 @@ body {
 
 .text-container {
     text-align: center;
+    transform: translateY(-5%);
 }
 
 .main_heading {
     margin: 1rem;
 }
 
-.main_heading h1 {
-    font-size: 2.6rem;
+.landing_text {
+    font-size: 2.4rem;
     color: #8DD7AB;
     text-decoration: underline;
 }
 
-h2 {
+.landing_typewrited_text {
     font-size: 2.2rem;
     color: #8DD7AB;
 }

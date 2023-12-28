@@ -175,7 +175,7 @@
 
 .producer_dash_job_card_bottom_right {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: flex-end;
     align-items: center;
 }
