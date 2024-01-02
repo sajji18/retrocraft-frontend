@@ -221,10 +221,10 @@ const FreelancerDashboard = () => {
                             {
                                 appliedJobPosts.length ?
                                 (
-                                    appliedJobPosts.map((elem, index) => {
+                                    appliedJobPosts.map((job, index) => {
                                         return (
-                                            <div className='freelancer_dash_applied_jobs_cards' key={elem._id}>
-                                                {elem.title}
+                                            <div className='freelancer_dash_applied_jobs_cards' key={job._id} onClick={() => navigate(`/job/${job._id}`)}>
+                                                {job.title}
                                             </div>
                                         )
                                     })

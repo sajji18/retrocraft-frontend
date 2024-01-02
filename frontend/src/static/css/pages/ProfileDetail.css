@@ -7,22 +7,20 @@
 }
 
 .profile_detail_photo {
-    background-color: grey;
+    background-color: white;
     width: 20%;
-    height: 32.5%;
-    border-top-left-radius: 1rem;
-    border-bottom-left-radius: 1rem;
+    height: 40%;
+    border-radius: 1rem;
+    margin-right: 2rem;
 }
 
 .profile_detail_form {
     display: flex;
     flex-direction: column;
-    width: 60%;
+    width: 55%;
     height: 80%;
     overflow-y: auto;
-    background-color: red;
-    border-bottom-right-radius: 1rem;
-    border-top-right-radius: 1rem;
-    border-bottom-left-radius: 1rem;
+    background-color: white;
+    border-radius: 1rem;
     padding: 2rem;
 }

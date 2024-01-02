@@ -4,10 +4,12 @@ import axios from 'axios';
 import '../static/css/pages/ProducerDashboard.css';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import '../static/css/pages/ProfileDetail.css';
+import Loading from '../components/Loading';
 
 const ProfileDetail = () => {
     const [userRole, setUserRole] = useState(localStorage.getItem("role"));
     const [token, setToken] = useState(localStorage.getItem("token"));
+    const [loading, setIsLoading] = useState(true);
     const navigate = useNavigate();
 
     const { username } = useParams();
@@ -42,6 +44,7 @@ const ProfileDetail = () => {
             .then(response => {
                 console.log(response.data)
                 setUserDetails(response.data)
+                setIsLoading(false)
             })
             .catch(error => {
                 console.error('Error fetching user data:', error);
@@ -57,6 +60,7 @@ const ProfileDetail = () => {
             .then(response => {
                 console.log(response.data)
                 setUserDetails(response.data)
+                setIsLoading(false)
             })
             .catch(error => {
                 console.error('Error fetching user data:', error);
@@ -65,8 +69,12 @@ const ProfileDetail = () => {
         
     }, []);
 
-    const handleProfileClick = () => {
-        navigate(`/profile/${username}`)
+    // const handleProfileClick = () => {
+    //     navigate(`/profile/${username}`)
+    // }
+
+    const handleProfileUpdateSubmit = () => {
+
     }
 
     const handleLogout = () => {
@@ -93,23 +101,223 @@ const ProfileDetail = () => {
                             </a>
                         </div>
                         <div className='producer_navbar_right'>
-                            <button className='producer_profile_button' onClick={handleProfileClick}><AccountCircleIcon style={{ fontSize: '2rem' }}/></button>
+                            {/* <button className='producer_profile_button' onClick={handleProfileClick}><AccountCircleIcon style={{ fontSize: '2rem' }}/></button> */}
                             <button className='producer_navbar_logout' onClick={handleLogout}>Logout</button>
                         </div>
                     </div>
-                    <div className='profile_detail_main_area'>
-                        <div className='profile_detail_photo'>
-                            
-                        </div>
-                        <div className='profile_detail_form'>
-
-                        </div>
-                    </div>
+                    {
+                        !loading ?
+                        (
+                            <div className='profile_detail_main_area'>
+                                <div className='profile_detail_photo'
+                                    style={{
+                                        overflow: 'hidden', 
+                                        border: '2px solid #fff',
+                                        boxShadow: '0 0 5px rgba(0, 0, 0, 0.3)',
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'flex-start',
+                                        paddingBottom: '3rem',
+                                    }}
+                                >
+                                    <img 
+                                        className="profile-picture" 
+                                        src={'../../public/Profile.jpg'} 
+                                        alt="Profile" 
+                                        style={{
+                                            width: '80%',
+                                            height: '80%',
+                                            objectFit: 'cover',
+                                            borderRadius: '50%',
+                                            marginTop: '1rem',
+                                            cursor: 'pointer',
+                                        }}
+                                    />
+                                </div>
+                                <div 
+                                    className='profile_detail_form'
+                                    style={{
+                                        border: '2px solid #fff',
+                                        boxShadow: '0 0 5px rgba(0, 0, 0, 0.3)',
+                                    }}
+                                >
+                                    <div className='post_detail_heading'>
+                                        <span
+                                            style={{
+                                                fontSize: '1.75rem',
+                                                // textDecoration: 'underline',
+                                                color: '#8DD7AB',
+                                            }}
+                                        >
+                                            PROFILE
+                                        </span>
+                                    </div>
+                                    <div className='post_detail_form_title'>
+                                        <span>Username</span>
+                                        <input 
+                                            type="text"
+                                            value={userDetails.username}
+                                            disabled
+                                        />
+                                    </div>
+                                    <div className='post_detail_form_title'>
+                                        <span>Email</span>
+                                        <input 
+                                            type="text"
+                                            value={userDetails.email}
+                                            disabled
+                                        />
+                                    </div>
+                                    <div className='post_detail_form_title'>
+                                        <span>First Name</span>
+                                        <input 
+                                            type="text"
+                                            value={userDetails.firstName}
+                                            placeholder='Add First Name'
+                                        />
+                                    </div>
+                                    <div className='post_detail_form_title'>
+                                        <span>Last Name</span>
+                                        <input 
+                                            type="text"
+                                            value={userDetails.lastName}
+                                            placeholder='Add Last Name'
+                                        />
+                                    </div>
+                                    <div className='post_detail_form_description'>
+                                        <label htmlFor="description">Bio:</label>
+                                        <textarea 
+                                            name="description" 
+                                            rows="5" 
+                                            cols="67"
+                                            value={userDetails.bio}
+                                            // onChange={(e) => {setDescription(e.target.value); setMessage('')}}
+                                            placeholder="Add Bio"
+                                        />
+                                    </div>
+                                    <div className='post_detail_form_requirements'>
+                                        <label htmlFor='requirements'>Work Experience (one per line):</label>
+                                        <textarea
+                                            rows="5" 
+                                            cols="67"
+                                            name='requirements'
+                                            value={userDetails.workExperience}
+                                            // onChange={(e) => {setRequirements(e.target.value.split(',').map((item) => item.trim())); setMessage('');}}
+                                            placeholder="Add Experience"
+                                        />
+                                    </div>
+                                    <div className='post_detail_form_requirements'>
+                                        <label htmlFor='requirements'>Education (one per line):</label>
+                                        <textarea
+                                            rows="5" 
+                                            cols="67"
+                                            name='requirements'
+                                            value={userDetails.education}
+                                            // onChange={(e) => {setRequirements(e.target.value.split(',').map((item) => item.trim())); setMessage('');}}
+                                            placeholder="Add Education"
+                                        />
+                                    </div>
+                                    <div className='post_detail_form_skills'>
+                                        <label htmlFor='skills'>Skills (one per line):</label>
+                                        <textarea
+                                            name='skills'
+                                            value={userDetails.skills}
+                                            // onChange={(e) => {setSkillsRequired(e.target.value.split(',').map((item) => item.trim())); setMessage('');}}
+                                            placeholder="Enter skills"
+                                        />
+                                    </div>
+                                    <div className='post_detail_form_location'>
+                                        <label htmlFor='location'>Location:</label>
+                                        <input
+                                            type="text"
+                                            value={userDetails.location}
+                                            // onChange={(e) => {setLocation(e.target.value); setMessage('');}}
+                                            placeholder="Enter location"
+                                        />
+                                    </div>
+                                    <div className='post_detail_form_update'>
+                                        <button onClick={handleProfileUpdateSubmit}>Update Profile</button>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                        :
+                        (
+                            <Loading/>
+                        )
+                    }
                 </>
             )
         }
         else if ((userRole === 'PRODUCER' && username !== userDetails.username) || (userRole === 'FREELANCER' && username !== userDetails.username)){
-            return <div>TODO = Show Profile without edit Options To Other Users - Both Freelancers and Producers</div>
+            return (
+                <>
+                    <div className='producer_navbar_container'>
+                        <div className='producer_navbar_left'>
+                            <a href='/producer-dashboard'>
+                                <span className='producer_nav_span_1'>Retrocraft</span>
+                                <span className='producer_nav_span_2'>Hub</span>
+                            </a>
+                        </div>
+                        <div className='producer_navbar_right'>
+                            {/* <button className='producer_profile_button' onClick={handleProfileClick}><AccountCircleIcon style={{ fontSize: '2rem' }}/></button> */}
+                            <button className='producer_navbar_logout' onClick={handleLogout}>Logout</button>
+                        </div>
+                    </div>
+                    {
+                        !loading ? 
+                        (   
+                            <div className='profile_detail_main_area'>
+                                <div className='profile_detail_photo'
+                                    style={{
+                                        overflow: 'hidden', 
+                                        border: '2px solid #fff',
+                                        boxShadow: '0 0 5px rgba(0, 0, 0, 0.3)',
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'flex-start',
+                                        paddingBottom: '3rem',
+                                    }}
+                                >
+                                    <img 
+                                        className="profile-picture" 
+                                        src={'../../public/Profile.jpg'} 
+                                        alt="Profile" 
+                                        style={{
+                                            width: '80%',
+                                            height: '80%',
+                                            objectFit: 'cover',
+                                            borderRadius: '50%',
+                                            marginTop: '1rem',
+                                            cursor: 'pointer',
+                                        }}
+                                    />
+                                </div>
+                                <div 
+                                    className='profile_detail_form'
+                                    style={{
+                                        border: '2px solid #fff',
+                                        boxShadow: '0 0 5px rgba(0, 0, 0, 0.3)',
+                                    }}
+                                >
+
+                                </div>
+                            </div>
+                        )
+                        :
+                        (
+                            <div
+                                style={{
+                                    
+                                }}
+                            >
+                                <Loading />
+                            </div>
+                        )
+                    }
+                    
+                </>
+            )
         }
     }
 }
