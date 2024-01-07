@@ -155,7 +155,7 @@ const PostDetail = () => {
 
     // ------------PROFILE ICON CLICK----------------
     const handleProfileClick = () => {
-        navigate(`/profile/${username}`)
+        navigate(`/profile/${userRole}/${username}`)
     }
 
     // ------------FREELANCER APPLY CLICK CONTROLLER----------------
@@ -244,7 +244,7 @@ const PostDetail = () => {
                                 <div className='post_detail_form'>
                                     <div className='general_post_detail_heading'>
                                         <h1>{selectedJobData.title}</h1>
-                                        <span style={{ fontSize: '1.25rem' }}>Posted By <a href={`/profile/${selectedJobData.producer.username}`}>{selectedJobData.producer.username}</a></span>
+                                        <span style={{ fontSize: '1.25rem' }}>Posted By <a href={`/profile/${selectedJobData.producer.role}/${selectedJobData.producer.username}`}>{selectedJobData.producer.username}</a></span>
                                     </div>
                                     <div className='general_post_detail_description'>
                                         <h2>Description</h2>

@@ -37,8 +37,8 @@ const FreelancerSignin = () => {
                     Freelancer Login
                 </div>
                 <div className="form_fields">
-                    <input type="text" placeholder='Username'value={username} onChange={(e) => setUsername(e.target.value)}/>
-                    <input type="password" placeholder='Password'value={password} onChange={(e) => setPassword(e.target.value)}/>
+                    <input type="text" placeholder='Username' value={username} onChange={(e) => setUsername(e.target.value)}/>
+                    <input type="password" placeholder='Password' value={password} onChange={(e) => setPassword(e.target.value)}/>
                 </div>
                 <div className="form_submit">
                     <button onClick={handleSubmit}>Login</button>

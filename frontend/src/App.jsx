@@ -20,7 +20,7 @@ function App() {
           <Route path='/freelancer-dashboard' element={<FreelancerDashboard/>} />
 
           <Route path='/producer-dashboard' element={<ProducerDashboard/>} />
-          <Route path='/profile/:username' element={<ProfileDetail/>} />
+          <Route path='/profile/:role/:username' element={<ProfileDetail/>} />
           <Route path='/job/:jobId' element={<PostDetail/>} />
 
       </Routes>

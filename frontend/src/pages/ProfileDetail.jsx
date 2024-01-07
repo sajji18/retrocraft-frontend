@@ -12,8 +12,9 @@ const ProfileDetail = () => {
     const [loading, setIsLoading] = useState(true);
     const navigate = useNavigate();
 
-    const { username } = useParams();
-    const [userDetails, setUserDetails] = useState({});
+    const { username, role } = useParams();
+    const [loggedInUserDetails, setLoggedInUserDetails] = useState({});
+    const [profileOwnerDetails, setProfileOwnerDetails] = useState({});
 
     useEffect(() => {
         axios.get('http://localhost:3000/details', {
@@ -43,7 +44,7 @@ const ProfileDetail = () => {
             })
             .then(response => {
                 console.log(response.data)
-                setUserDetails(response.data)
+                setLoggedInUserDetails(response.data)
                 setIsLoading(false)
             })
             .catch(error => {
@@ -59,7 +60,7 @@ const ProfileDetail = () => {
             })
             .then(response => {
                 console.log(response.data)
-                setUserDetails(response.data)
+                setLoggedInUserDetails(response.data)
                 setIsLoading(false)
             })
             .catch(error => {
@@ -67,6 +68,19 @@ const ProfileDetail = () => {
             });
         }
         
+    }, [userRole]);
+
+    useEffect(() => {
+        axios
+        .get(`http://localhost:3000/profile-owner-details/${role}/${username}`)
+        .then(response => {
+            console.log(response.data)
+            setProfileOwnerDetails(response.data);
+            setIsLoading(false);
+        })
+        .catch(error => {
+            console.error('Error fetching profile owner data: ', error);
+        })
     }, []);
 
     // const handleProfileClick = () => {
@@ -90,7 +104,7 @@ const ProfileDetail = () => {
         )
     }
     else {
-        if ((userRole === 'PRODUCER' && username === userDetails.username) || (userRole === 'FREELANCER' && username === userDetails.username)) {
+        if ((userRole === 'PRODUCER' && username === loggedInUserDetails.username) || (userRole === 'FREELANCER' && username === loggedInUserDetails.username)) {
             return (
                 <>
                     <div className='producer_navbar_container'>
@@ -115,14 +129,15 @@ const ProfileDetail = () => {
                                         border: '2px solid #fff',
                                         boxShadow: '0 0 5px rgba(0, 0, 0, 0.3)',
                                         display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'flex-start',
-                                        paddingBottom: '3rem',
+                                        justifyContent: 'space-between',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        paddingBottom: '1rem',
                                     }}
                                 >
                                     <img 
                                         className="profile-picture" 
-                                        src={'../../public/Profile.jpg'} 
+                                        src={'../../public/default_profile.jpg'} 
                                         alt="Profile" 
                                         style={{
                                             width: '80%',
@@ -133,6 +148,26 @@ const ProfileDetail = () => {
                                             cursor: 'pointer',
                                         }}
                                     />
+                                    <div style={{
+                                        // marginTop: '1rem',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                    }}>
+                                        <span
+                                            style={{
+                                                fontSize: '1.5rem',
+                                            }}
+                                        >
+                                            {profileOwnerDetails.username}
+                                        </span>
+                                        <span>
+                                            {profileOwnerDetails.email}
+                                        </span>
+                                        <span>
+                                            {/* Connections {profileOwnerDetails.} */}
+                                        </span>
+                                    </div>
                                 </div>
                                 <div 
                                     className='profile_detail_form'
@@ -141,103 +176,193 @@ const ProfileDetail = () => {
                                         boxShadow: '0 0 5px rgba(0, 0, 0, 0.3)',
                                     }}
                                 >
-                                    <div className='post_detail_heading'>
-                                        <span
-                                            style={{
-                                                fontSize: '1.75rem',
-                                                // textDecoration: 'underline',
-                                                color: '#8DD7AB',
-                                            }}
-                                        >
-                                            PROFILE
-                                        </span>
-                                    </div>
-                                    <div className='post_detail_form_title'>
-                                        <span>Username</span>
-                                        <input 
-                                            type="text"
-                                            value={userDetails.username}
-                                            disabled
-                                        />
-                                    </div>
-                                    <div className='post_detail_form_title'>
-                                        <span>Email</span>
-                                        <input 
-                                            type="text"
-                                            value={userDetails.email}
-                                            disabled
-                                        />
-                                    </div>
-                                    <div className='post_detail_form_title'>
-                                        <span>First Name</span>
-                                        <input 
-                                            type="text"
-                                            value={userDetails.firstName}
-                                            placeholder='Add First Name'
-                                        />
-                                    </div>
-                                    <div className='post_detail_form_title'>
-                                        <span>Last Name</span>
-                                        <input 
-                                            type="text"
-                                            value={userDetails.lastName}
-                                            placeholder='Add Last Name'
-                                        />
-                                    </div>
-                                    <div className='post_detail_form_description'>
-                                        <label htmlFor="description">Bio:</label>
-                                        <textarea 
-                                            name="description" 
-                                            rows="5" 
-                                            cols="67"
-                                            value={userDetails.bio}
-                                            // onChange={(e) => {setDescription(e.target.value); setMessage('')}}
-                                            placeholder="Add Bio"
-                                        />
-                                    </div>
-                                    <div className='post_detail_form_requirements'>
-                                        <label htmlFor='requirements'>Work Experience (one per line):</label>
-                                        <textarea
-                                            rows="5" 
-                                            cols="67"
-                                            name='requirements'
-                                            value={userDetails.workExperience}
-                                            // onChange={(e) => {setRequirements(e.target.value.split(',').map((item) => item.trim())); setMessage('');}}
-                                            placeholder="Add Experience"
-                                        />
-                                    </div>
-                                    <div className='post_detail_form_requirements'>
-                                        <label htmlFor='requirements'>Education (one per line):</label>
-                                        <textarea
-                                            rows="5" 
-                                            cols="67"
-                                            name='requirements'
-                                            value={userDetails.education}
-                                            // onChange={(e) => {setRequirements(e.target.value.split(',').map((item) => item.trim())); setMessage('');}}
-                                            placeholder="Add Education"
-                                        />
-                                    </div>
-                                    <div className='post_detail_form_skills'>
-                                        <label htmlFor='skills'>Skills (one per line):</label>
-                                        <textarea
-                                            name='skills'
-                                            value={userDetails.skills}
-                                            // onChange={(e) => {setSkillsRequired(e.target.value.split(',').map((item) => item.trim())); setMessage('');}}
-                                            placeholder="Enter skills"
-                                        />
-                                    </div>
-                                    <div className='post_detail_form_location'>
-                                        <label htmlFor='location'>Location:</label>
-                                        <input
-                                            type="text"
-                                            value={userDetails.location}
-                                            // onChange={(e) => {setLocation(e.target.value); setMessage('');}}
-                                            placeholder="Enter location"
-                                        />
-                                    </div>
-                                    <div className='post_detail_form_update'>
-                                        <button onClick={handleProfileUpdateSubmit}>Update Profile</button>
-                                    </div>
+                                    {
+                                        userRole === 'FREELANCER' ?
+                                        (
+                                            <>
+                                                <div className='post_detail_heading'>
+                                                    <span
+                                                        style={{
+                                                            fontSize: '1.75rem',
+                                                            // textDecoration: 'underline',
+                                                            color: '#8DD7AB',
+                                                        }}
+                                                    >
+                                                        PROFILE
+                                                    </span>
+                                                </div>
+                                                <div className='post_detail_form_title'>
+                                                    <span>Username</span>
+                                                    <input 
+                                                        type="text"
+                                                        value={profileOwnerDetails.username}
+                                                        disabled
+                                                    />
+                                                </div>
+                                                <div className='post_detail_form_title'>
+                                                    <span>Email</span>
+                                                    <input 
+                                                        type="text"
+                                                        value={profileOwnerDetails.email}
+                                                        disabled
+                                                    />
+                                                </div>
+                                                <div className='post_detail_form_title'>
+                                                    <span>First Name</span>
+                                                    <input 
+                                                        type="text"
+                                                        value={profileOwnerDetails.firstName}
+                                                        placeholder='Add First Name'
+                                                    />
+                                                </div>
+                                                <div className='post_detail_form_title'>
+                                                    <span>Last Name</span>
+                                                    <input 
+                                                        type="text"
+                                                        value={profileOwnerDetails.lastName}
+                                                        placeholder='Add Last Name'
+                                                    />
+                                                </div>
+                                                <div className='post_detail_form_description'>
+                                                    <label htmlFor="description">Bio:</label>
+                                                    <textarea 
+                                                        name="description" 
+                                                        rows="5" 
+                                                        cols="67"
+                                                        value={profileOwnerDetails.bio}
+                                                        // onChange={(e) => {setDescription(e.target.value); setMessage('')}}
+                                                        placeholder="Add Bio"
+                                                    />
+                                                </div>
+                                                <div className='post_detail_form_requirements'>
+                                                    <label htmlFor='requirements'>Work Experience (one per line):</label>
+                                                    <textarea
+                                                        rows="5" 
+                                                        cols="67"
+                                                        name='requirements'
+                                                        value={profileOwnerDetails.workExperience}
+                                                        // onChange={(e) => {setRequirements(e.target.value.split(',').map((item) => item.trim())); setMessage('');}}
+                                                        placeholder="Add Experience"
+                                                    />
+                                                </div>
+                                                <div className='post_detail_form_requirements'>
+                                                    <label htmlFor='requirements'>Education (one per line):</label>
+                                                    <textarea
+                                                        rows="5" 
+                                                        cols="67"
+                                                        name='requirements'
+                                                        value={profileOwnerDetails.education}
+                                                        // onChange={(e) => {setRequirements(e.target.value.split(',').map((item) => item.trim())); setMessage('');}}
+                                                        placeholder="Add Education"
+                                                    />
+                                                </div>
+                                                <div className='post_detail_form_skills'>
+                                                    <label htmlFor='skills'>Skills (one per line):</label>
+                                                    <textarea
+                                                        name='skills'
+                                                        value={profileOwnerDetails.skills}
+                                                        // onChange={(e) => {setSkillsRequired(e.target.value.split(',').map((item) => item.trim())); setMessage('');}}
+                                                        placeholder="Enter skills"
+                                                    />
+                                                </div>
+                                                <div className='post_detail_form_location'>
+                                                    <label htmlFor='location'>Location:</label>
+                                                    <input
+                                                        type="text"
+                                                        value={profileOwnerDetails.location}
+                                                        // onChange={(e) => {setLocation(e.target.value); setMessage('');}}
+                                                        placeholder="Enter location"
+                                                    />
+                                                </div>
+                                                <div className='post_detail_form_update'>
+                                                    <button onClick={handleProfileUpdateSubmit}>Update Profile</button>
+                                                </div>
+                                            </>
+                                        )
+                                        :
+                                        (
+                                            <>
+                                                <div className='post_detail_heading'>
+                                                    <span
+                                                        style={{
+                                                            fontSize: '1.75rem',
+                                                            // textDecoration: 'underline',
+                                                            color: '#8DD7AB',
+                                                        }}
+                                                    >
+                                                        PROFILE
+                                                    </span>
+                                                </div>
+                                                <div className='post_detail_form_title'>
+                                                    <span>Username</span>
+                                                    <input 
+                                                        type="text"
+                                                        value={profileOwnerDetails.username}
+                                                        disabled
+                                                    />
+                                                </div>
+                                                <div className='post_detail_form_title'>
+                                                    <span>Email</span>
+                                                    <input 
+                                                        type="text"
+                                                        value={profileOwnerDetails.email}
+                                                        disabled
+                                                    />
+                                                </div>
+                                                <div className='post_detail_form_title'>
+                                                    <span>First Name</span>
+                                                    <input 
+                                                        type="text"
+                                                        value={profileOwnerDetails.firstName}
+                                                        placeholder='Add First Name'
+                                                    />
+                                                </div>
+                                                <div className='post_detail_form_title'>
+                                                    <span>Last Name</span>
+                                                    <input 
+                                                        type="text"
+                                                        value={profileOwnerDetails.lastName}
+                                                        placeholder='Add Last Name'
+                                                    />
+                                                </div>
+                                                <div className='post_detail_form_description'>
+                                                    <label htmlFor="description">Bio:</label>
+                                                    <textarea 
+                                                        name="description" 
+                                                        rows="5" 
+                                                        cols="67"
+                                                        value={profileOwnerDetails.bio}
+                                                        // onChange={(e) => {setDescription(e.target.value); setMessage('')}}
+                                                        placeholder="Add Bio"
+                                                    />
+                                                </div>
+                                                <div className='post_detail_form_requirements'>
+                                                    <label htmlFor='requirements'>Work Experience (one per line):</label>
+                                                    <textarea
+                                                        rows="5" 
+                                                        cols="67"
+                                                        name='requirements'
+                                                        value={profileOwnerDetails.workExperience}
+                                                        // onChange={(e) => {setRequirements(e.target.value.split(',').map((item) => item.trim())); setMessage('');}}
+                                                        placeholder="Add Experience"
+                                                    />
+                                                </div>
+                                                <div className='post_detail_form_location'>
+                                                    <label htmlFor='location'>Location:</label>
+                                                    <input
+                                                        type="text"
+                                                        value={profileOwnerDetails.location}
+                                                        // onChange={(e) => {setLocation(e.target.value); setMessage('');}}
+                                                        placeholder="Enter location"
+                                                    />
+                                                </div>
+                                                <div className='post_detail_form_update'>
+                                                    <button onClick={handleProfileUpdateSubmit}>Update Profile</button>
+                                                </div>
+                                            </>
+                                        )
+                                    }
+                                    
                                 </div>
                             </div>
                         )
@@ -249,7 +374,7 @@ const ProfileDetail = () => {
                 </>
             )
         }
-        else if ((userRole === 'PRODUCER' && username !== userDetails.username) || (userRole === 'FREELANCER' && username !== userDetails.username)){
+        else if ((userRole === 'PRODUCER' && username !== loggedInUserDetails.username) || (userRole === 'FREELANCER' && username !== loggedInUserDetails.username)){
             return (
                 <>
                     <div className='producer_navbar_container'>
@@ -274,14 +399,15 @@ const ProfileDetail = () => {
                                         border: '2px solid #fff',
                                         boxShadow: '0 0 5px rgba(0, 0, 0, 0.3)',
                                         display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'flex-start',
-                                        paddingBottom: '3rem',
+                                        justifyContent: 'space-between',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        paddingBottom: '1rem',
                                     }}
                                 >
                                     <img 
                                         className="profile-picture" 
-                                        src={'../../public/Profile.jpg'} 
+                                        src={'../../public/default_profile.jpg'} 
                                         alt="Profile" 
                                         style={{
                                             width: '80%',
@@ -292,6 +418,23 @@ const ProfileDetail = () => {
                                             cursor: 'pointer',
                                         }}
                                     />
+                                    <div style={{
+                                        // marginTop: '1rem',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                    }}>
+                                        <span
+                                            style={{
+                                                fontSize: '1.5rem',
+                                            }}
+                                        >
+                                            {profileOwnerDetails.username}
+                                        </span>
+                                        <span>
+                                            {profileOwnerDetails.email}
+                                        </span>
+                                    </div>
                                 </div>
                                 <div 
                                     className='profile_detail_form'

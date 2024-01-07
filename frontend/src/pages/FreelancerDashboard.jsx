@@ -127,7 +127,7 @@ const FreelancerDashboard = () => {
 
     // ----------------- HANDLING THE PROFILE BUTTON CLICK -----------------
     const handleProfileClick = () => {
-        navigate(`/profile/${username}`)
+        navigate(`/profile/${userRole}/${username}`)
     }
 
     // ----------------- HANDLING THE LOGOUT BUTTON CLICK -----------------
@@ -200,7 +200,7 @@ const FreelancerDashboard = () => {
                                     )
                                     :
                                     (
-                                        <div>No Job Posts Yet</div>
+                                        <div style={{ height: '100%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>No Job Posts Yet</div>
                                     )
                                 )
                             }
@@ -237,7 +237,7 @@ const FreelancerDashboard = () => {
                                     )
                                     :
                                     (
-                                        <div>No Applied Jobs Yet</div>
+                                        <div style={{ height: '100%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>No Applied Jobs Yet</div>
                                     )
                                 )
                             }

@@ -97,7 +97,7 @@ const ProducerDashboard = () => {
     }, [])
 
     const handleProfileClick = () => {
-        navigate(`/profile/${username}`)
+        navigate(`/profile/${userRole}/${username}`)
     }
 
     const handleLogout = () => {
