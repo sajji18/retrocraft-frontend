@@ -367,7 +367,7 @@ const PostDetail = () => {
                             />
                         </div>
                         <div className='post_detail_form_skills'>
-                            <label htmlFor='skills'>Skills (one per line):</label>
+                            <label htmlFor='skills'>Skills (Separated By Comma):</label>
                             <textarea
                                 name='skills'
                                 value={skillsRequired}

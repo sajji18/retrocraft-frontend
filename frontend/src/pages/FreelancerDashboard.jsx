@@ -65,6 +65,7 @@ const FreelancerDashboard = () => {
     const [jobPosts, setJobPosts] = useState([]);
     const [connectionRequests, setConnectionRequest] = useState([]);
     const [appliedJob, setAppliedJobs] = useState([]);
+    const [incomingConnectionRequests, setIncomingConnectionRequests] = useState([]);
 
     // HATE SEEING THE SPLIT SECOND FLASHES
     const [loading, setLoading] = useState(true); 
@@ -212,7 +213,23 @@ const FreelancerDashboard = () => {
                             <span>Pending Connection Requests</span>
                         </div>
                         <div className='freelancer_dash_main_requests'>
-
+                            {
+                                incomingConnectionRequests.length ? 
+                                (
+                                    <div></div>
+                                )
+                                :
+                                (
+                                    loading ?
+                                    (
+                                        <div style={{ height: '100%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}><Loading /></div>
+                                    )
+                                    :
+                                    (
+                                        <div style={{ height: '100%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>No Pending Connection Requests</div>
+                                    )
+                                )
+                            }
                         </div>
                         <div className='freelancer_dash_main_right_head'>
                             <span>Applied Jobs</span>

@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router';
 import axios from 'axios';
 import '../static/css/pages/ProducerDashboard.css';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+// import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import '../static/css/pages/ProfileDetail.css';
+import '../static/css/pages/PostDetail.css';
 import Loading from '../components/Loading';
 
 const ProfileDetail = () => {
@@ -15,6 +16,105 @@ const ProfileDetail = () => {
     const { username, role } = useParams();
     const [loggedInUserDetails, setLoggedInUserDetails] = useState({});
     const [profileOwnerDetails, setProfileOwnerDetails] = useState({});
+    const [message, setMessage] = useState('');
+
+    // Profile Form States
+    const [profileOwnerFormDetails, setProfileOwnerFormDetails] = useState({
+        // Freelancer Fields
+        firstName: profileOwnerDetails.firstName || '', 
+        lastName: profileOwnerDetails.lastName || '',
+        bio: profileOwnerDetails.bio || '',
+        experience: profileOwnerDetails.experience || [],
+        education: profileOwnerDetails.education || [],
+        skills: profileOwnerDetails.skills || '',
+        location: profileOwnerDetails.location || '',
+
+        // Producer Fields
+        about: profileOwnerDetails.about || '',
+        industry: profileOwnerDetails.industry || '',
+        companyName: profileOwnerDetails.companyName || '',
+        jobsCreated: profileOwnerDetails.jobsCreated || [],
+    });
+
+    const handleChange = (e, fieldPath) => {
+        setMessage('')
+        setProfileOwnerFormDetails((prevDetails) => ({
+            ...prevDetails,
+            [fieldPath]: e.target.value,
+        }));
+    }
+
+    const handleExperienceChange = (index, fieldName, value) => {
+        setMessage('')
+        setProfileOwnerFormDetails((prevDetails) => {
+            const newExperience = [...prevDetails.experience];
+            newExperience[index] = {
+                ...newExperience[index],
+                [fieldName]: value,
+            };
+            return {
+                ...prevDetails,
+                experience: newExperience,
+            };
+        });
+    }
+
+    const handleEducationChange = (index, fieldName, value) => {
+        setMessage('');
+        setProfileOwnerFormDetails((prevDetails) => {
+            const newEducation = [...prevDetails.education];
+            newEducation[index] = {
+                ...newEducation[index],
+                [fieldName]: value,
+            };
+            return {
+                ...prevDetails,
+                education: newEducation,
+            };
+        });
+    }
+
+    const handleAddEducation = () => {
+        setMessage('')
+        setProfileOwnerFormDetails((prevDetails) => ({
+            ...prevDetails,
+            education: [...prevDetails.education, { degree: '', school: '', graduationYear: '' }],
+        }));
+    }
+
+    const handleRemoveEducation = (index) => {
+        setMessage('')
+        setProfileOwnerFormDetails((prevDetails) => {
+            const newEducation = [...prevDetails.education];
+            newEducation.splice(index, 1);
+            return {
+                ...prevDetails,
+                education: newEducation,
+            };
+        });
+    }
+
+    console.log("Hello ", profileOwnerFormDetails);
+
+    const handleAddExperience = () => {
+        setMessage('');
+        setProfileOwnerFormDetails((prevDetails) => ({
+            ...prevDetails,
+            experience: [...prevDetails.experience, { jobTitle: '', company: '', startDate: '', endDate: '', description: '' }],
+        }));
+    }
+        
+    const handleRemoveExperience = (index) => {
+        setMessage('');
+        setProfileOwnerFormDetails((prevDetails) => {
+            const newExperience = [...prevDetails.experience];
+            newExperience.splice(index, 1);
+            return {
+                ...prevDetails,
+                experience: newExperience,
+            };
+        });
+    }
 
     useEffect(() => {
         axios.get('http://localhost:3000/details', {
@@ -74,7 +174,7 @@ const ProfileDetail = () => {
         axios
         .get(`http://localhost:3000/profile-owner-details/${role}/${username}`)
         .then(response => {
-            console.log(response.data)
+            console.log(response.data);
             setProfileOwnerDetails(response.data);
             setIsLoading(false);
         })
@@ -83,12 +183,64 @@ const ProfileDetail = () => {
         })
     }, []);
 
+    useEffect(() => {
+        setProfileOwnerFormDetails({
+            ...profileOwnerFormDetails,
+            ...profileOwnerDetails,
+        })
+    }, [profileOwnerDetails])
+
     // const handleProfileClick = () => {
     //     navigate(`/profile/${username}`)
     // }
 
-    const handleProfileUpdateSubmit = () => {
+    const handleFreelancerProfileUpdateSubmit = () => {
+        // e.preventDefault();
+        // console.log(profileOwnerFormDetails.skills)
+        // const skillsData = profileOwnerFormDetails.skills.split(',').map((item) => item.trim());
+        
+        axios
+        .put('http://localhost:3000/freelancer/profile', {
+            firstName: profileOwnerFormDetails.firstName,
+            lastName: profileOwnerFormDetails.lastName,
+            bio: profileOwnerFormDetails.bio,
+            experience: profileOwnerFormDetails.experience,
+            education: profileOwnerFormDetails.education,
+            skills: profileOwnerFormDetails.skills,
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then((response) => {
+            console.log(response.data);
+            setProfileOwnerDetails(response.data.updatedProfile);
+            setMessage(response.data.message);
+        })
+        .catch((error) => {
+            console.error("Some Error Updating Information: ", error)
+        })
+    }
 
+    const handleProducerProfileUpdateSubmit = () => {
+        axios
+        .put('http://localhost:3000/producer/profile', {
+            about: profileOwnerFormDetails.about,
+            companyName: profileOwnerFormDetails.companyName,
+            industry: profileOwnerFormDetails.industry,
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then((response) => {
+            console.log(response.data);
+            setProfileOwnerDetails(response.data.updatedProfile);
+            setMessage(response.data.message);
+        })
+        .catch((error) => {
+            console.error("Some Error Updating Information: ", error)
+        })
     }
 
     const handleLogout = () => {
@@ -137,7 +289,7 @@ const ProfileDetail = () => {
                                 >
                                     <img 
                                         className="profile-picture" 
-                                        src={'../../public/default_profile.jpg'} 
+                                        src={'/default_profile.jpg'} 
                                         alt="Profile" 
                                         style={{
                                             width: '80%',
@@ -195,7 +347,7 @@ const ProfileDetail = () => {
                                                     <span>Username</span>
                                                     <input 
                                                         type="text"
-                                                        value={profileOwnerDetails.username}
+                                                        value={profileOwnerDetails?.username}
                                                         disabled
                                                     />
                                                 </div>
@@ -203,7 +355,7 @@ const ProfileDetail = () => {
                                                     <span>Email</span>
                                                     <input 
                                                         type="text"
-                                                        value={profileOwnerDetails.email}
+                                                        value={profileOwnerDetails?.email}
                                                         disabled
                                                     />
                                                 </div>
@@ -211,7 +363,8 @@ const ProfileDetail = () => {
                                                     <span>First Name</span>
                                                     <input 
                                                         type="text"
-                                                        value={profileOwnerDetails.firstName}
+                                                        defaultValue={profileOwnerFormDetails?.firstName}
+                                                        onChange={(e) => handleChange(e, 'firstName')}
                                                         placeholder='Add First Name'
                                                     />
                                                 </div>
@@ -219,7 +372,8 @@ const ProfileDetail = () => {
                                                     <span>Last Name</span>
                                                     <input 
                                                         type="text"
-                                                        value={profileOwnerDetails.lastName}
+                                                        defaultValue={profileOwnerFormDetails?.lastName}
+                                                        onChange={(e) => handleChange(e, 'lastName')}
                                                         placeholder='Add Last Name'
                                                     />
                                                 </div>
@@ -229,54 +383,213 @@ const ProfileDetail = () => {
                                                         name="description" 
                                                         rows="5" 
                                                         cols="67"
-                                                        value={profileOwnerDetails.bio}
+                                                        defaultValue={profileOwnerFormDetails?.bio}
+                                                        onChange={(e) => handleChange(e, 'bio')}
                                                         // onChange={(e) => {setDescription(e.target.value); setMessage('')}}
                                                         placeholder="Add Bio"
                                                     />
                                                 </div>
                                                 <div className='post_detail_form_requirements'>
-                                                    <label htmlFor='requirements'>Work Experience (one per line):</label>
-                                                    <textarea
-                                                        rows="5" 
-                                                        cols="67"
-                                                        name='requirements'
-                                                        value={profileOwnerDetails.workExperience}
-                                                        // onChange={(e) => {setRequirements(e.target.value.split(',').map((item) => item.trim())); setMessage('');}}
-                                                        placeholder="Add Experience"
-                                                    />
+                                                    <label htmlFor='requirements'>Work Experience:</label>
+                                                    {profileOwnerFormDetails?.experience?.map((exp, index) => (
+                                                        <>
+                                                            <div 
+                                                                key={index}
+                                                                style={{
+                                                                    display: 'flex',
+                                                                    flexDirection: 'column',
+                                                                    alignItems: 'flex-start',
+                                                                    minWidth: '90%',
+                                                                    padding: '1rem',
+                                                                    justifyContent: 'space-evenly',
+                                                                    backgroundColor: '#f6f7f8',
+                                                                    borderRadius: '1rem',
+                                                                    margin: '0.5rem 0'
+                                                                }}
+                                                            >
+                                                                <div 
+                                                                    style={{
+                                                                        fontSize: '1.25rem',
+                                                                        fontWeight: 'bold'
+                                                                    }}
+                                                                >
+                                                                    Experience {index+1}
+                                                                </div>
+                                                                <div className='profile_detail_experience_form_field'>
+                                                                    <span>Job Title</span>
+                                                                    <input
+                                                                        type="text"
+                                                                        name="jobTitle"
+                                                                        value={exp.jobTitle}
+                                                                        onChange={(e) => handleExperienceChange(index, 'jobTitle', e.target.value)}
+                                                                        placeholder="Job Title"
+                                                                    />
+                                                                </div>
+                                                                <div className='profile_detail_experience_form_field'>
+                                                                    <span>Company</span>
+                                                                    <input
+                                                                        type="text"
+                                                                        name="company"
+                                                                        value={exp.company}
+                                                                        onChange={(e) => handleExperienceChange(index, 'company', e.target.value)}
+                                                                        placeholder="Company"
+                                                                    />
+                                                                </div>
+                                                                <div className='profile_detail_experience_form_field'>
+                                                                    <span>Start Date</span>
+                                                                    <input
+                                                                        type="date"
+                                                                        name="startDate"
+                                                                        value={exp.startDate}
+                                                                        onChange={(e) => handleExperienceChange(index, 'startDate', e.target.value)}
+                                                                        placeholder="Start Date"
+                                                                    />
+                                                                </div>
+                                                                <div className='profile_detail_experience_form_field'>
+                                                                    <span>End Date</span>
+                                                                    <input
+                                                                        type="date"
+                                                                        name="endDate"
+                                                                        value={exp.endDate}
+                                                                        onChange={(e) => handleExperienceChange(index, 'endDate', e.target.value)}
+                                                                        placeholder="End Date"
+                                                                    />
+                                                                </div>
+                                                                <div className='profile_detail_experience_form_field'>
+                                                                    <span>Description</span>
+                                                                    <input
+                                                                        type="text"
+                                                                        name="description"
+                                                                        value={exp.description}
+                                                                        onChange={(e) => handleExperienceChange(index, 'description', e.target.value)}
+                                                                        placeholder="Description"
+                                                                    />
+                                                                </div>
+                                                                {/* Repeat similar lines for other fields in experience */}
+                                                                <div className='post_detail_form_update'>
+                                                                    <button 
+                                                                        onClick={() => handleRemoveExperience(index)}
+                                                                        style={{ margin: '0.25rem 0', borderRadius: '1rem', backgroundColor: 'rgb(238, 60, 90)' }}
+                                                                    >
+                                                                        Remove
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                            <hr />
+                                                        </>
+                                                    ))}
+                                                    <button 
+                                                        onClick={handleAddExperience}
+                                                        style={{
+                                                            height: '2.5rem',
+                                                            borderRadius: '1rem',
+                                                            border: 'none',
+                                                            margin: '0.75rem 0',
+                                                            backgroundColor: '#8DD7AB',
+                                                            cursor: 'pointer'
+                                                        }}
+                                                    >
+                                                        <span style={{ color: 'white', fontSize: '1rem', fontWeight: 'bold' }}>Add Experience</span>
+                                                    </button>
                                                 </div>
                                                 <div className='post_detail_form_requirements'>
                                                     <label htmlFor='requirements'>Education (one per line):</label>
-                                                    <textarea
-                                                        rows="5" 
-                                                        cols="67"
-                                                        name='requirements'
-                                                        value={profileOwnerDetails.education}
-                                                        // onChange={(e) => {setRequirements(e.target.value.split(',').map((item) => item.trim())); setMessage('');}}
-                                                        placeholder="Add Education"
-                                                    />
+                                                    {profileOwnerFormDetails?.education?.map((edu, index) => (
+                                                        <>
+                                                            <div 
+                                                                key={index}
+                                                                style={{
+                                                                    display: 'flex',
+                                                                    flexDirection: 'column',
+                                                                    alignItems: 'flex-start',
+                                                                    minWidth: '90%',
+                                                                    padding: '1rem',
+                                                                    justifyContent: 'space-evenly',
+                                                                    backgroundColor: '#f6f7f8',
+                                                                    borderRadius: '1rem',
+                                                                    margin: '0.5rem 0'
+                                                                }}
+                                                            >
+                                                                <div 
+                                                                    style={{
+                                                                        fontSize: '1.25rem',
+                                                                        fontWeight: 'bold'
+                                                                    }}
+                                                                >
+                                                                    Education {index+1}
+                                                                </div>
+                                                                <div className='profile_detail_experience_form_field'>
+                                                                    <span>Degree</span>
+                                                                    <input
+                                                                        type="text"
+                                                                        name="degree"
+                                                                        value={edu.degree}
+                                                                        onChange={(e) => handleEducationChange(index, 'degree', e.target.value)}
+                                                                        placeholder="Degree"
+                                                                    />
+                                                                </div>
+                                                                <div className='profile_detail_experience_form_field'>
+                                                                    <span>School</span>
+                                                                    <input
+                                                                        type="text"
+                                                                        name="school"
+                                                                        value={edu.school}
+                                                                        onChange={(e) => handleEducationChange(index, 'school', e.target.value)}
+                                                                        placeholder="School"
+                                                                    />
+                                                                </div>
+                                                                <div className='profile_detail_experience_form_field'>
+                                                                    <span>Graduation Year</span>
+                                                                    <input
+                                                                        type="date"
+                                                                        name="graduationYear"
+                                                                        value={edu.graduationYear}
+                                                                        onChange={(e) => handleEducationChange(index, 'graduationYear', e.target.value)}
+                                                                        placeholder="Graduation Year"
+                                                                    />
+                                                                </div>
+                                                                <div className='post_detail_form_update'>
+                                                                    <button 
+                                                                        onClick={() => handleRemoveEducation(index)}
+                                                                        style={{ margin: '0.25rem 0', borderRadius: '1rem', backgroundColor: 'rgb(238, 60, 90)' }}
+                                                                    >
+                                                                        Remove
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                            <hr />
+                                                        </>
+                                                    ))}
+                                                    <button 
+                                                        onClick={handleAddEducation}
+                                                        style={{
+                                                            height: '2.5rem',
+                                                            borderRadius: '1rem',
+                                                            border: 'none',
+                                                            margin: '0.75rem 0',
+                                                            backgroundColor: '#8DD7AB',
+                                                            cursor: 'pointer'
+                                                        }}
+                                                    >
+                                                        <span style={{ color: 'white', fontSize: '1rem', fontWeight: 'bold' }}>Add Education</span>
+                                                    </button>
                                                 </div>
                                                 <div className='post_detail_form_skills'>
-                                                    <label htmlFor='skills'>Skills (one per line):</label>
+                                                    <label htmlFor='skills'>Skills (Separate By Comma):</label>
                                                     <textarea
                                                         name='skills'
-                                                        value={profileOwnerDetails.skills}
-                                                        // onChange={(e) => {setSkillsRequired(e.target.value.split(',').map((item) => item.trim())); setMessage('');}}
+                                                        value={profileOwnerFormDetails?.skills}
+                                                        onChange={(e) => {handleChange(e, 'skills')}}
                                                         placeholder="Enter skills"
                                                     />
                                                 </div>
-                                                <div className='post_detail_form_location'>
-                                                    <label htmlFor='location'>Location:</label>
-                                                    <input
-                                                        type="text"
-                                                        value={profileOwnerDetails.location}
-                                                        // onChange={(e) => {setLocation(e.target.value); setMessage('');}}
-                                                        placeholder="Enter location"
-                                                    />
-                                                </div>
                                                 <div className='post_detail_form_update'>
-                                                    <button onClick={handleProfileUpdateSubmit}>Update Profile</button>
+                                                    <button style={{ margin: '1rem 0' }} onClick={handleFreelancerProfileUpdateSubmit}>Update Profile</button>
                                                 </div>
+                                                {
+                                                    message ? 
+                                                    ( <div className='post_detail_informative_message'><span>{message}</span></div> ) : ( <></> )
+                                                }
                                             </>
                                         )
                                         :
@@ -309,56 +622,40 @@ const ProfileDetail = () => {
                                                         disabled
                                                     />
                                                 </div>
-                                                <div className='post_detail_form_title'>
-                                                    <span>First Name</span>
-                                                    <input 
-                                                        type="text"
-                                                        value={profileOwnerDetails.firstName}
-                                                        placeholder='Add First Name'
-                                                    />
-                                                </div>
-                                                <div className='post_detail_form_title'>
-                                                    <span>Last Name</span>
-                                                    <input 
-                                                        type="text"
-                                                        value={profileOwnerDetails.lastName}
-                                                        placeholder='Add Last Name'
-                                                    />
-                                                </div>
                                                 <div className='post_detail_form_description'>
-                                                    <label htmlFor="description">Bio:</label>
+                                                    <label htmlFor="description">About:</label>
                                                     <textarea 
                                                         name="description" 
                                                         rows="5" 
                                                         cols="67"
-                                                        value={profileOwnerDetails.bio}
+                                                        defaultValue={profileOwnerDetails.bio}
                                                         // onChange={(e) => {setDescription(e.target.value); setMessage('')}}
                                                         placeholder="Add Bio"
                                                     />
                                                 </div>
-                                                <div className='post_detail_form_requirements'>
-                                                    <label htmlFor='requirements'>Work Experience (one per line):</label>
-                                                    <textarea
-                                                        rows="5" 
-                                                        cols="67"
-                                                        name='requirements'
-                                                        value={profileOwnerDetails.workExperience}
-                                                        // onChange={(e) => {setRequirements(e.target.value.split(',').map((item) => item.trim())); setMessage('');}}
-                                                        placeholder="Add Experience"
+                                                <div className='post_detail_form_title'>
+                                                    <span>Company Name</span>
+                                                    <input 
+                                                        type="text"
+                                                        defaultValue={profileOwnerDetails.firstName}
+                                                        placeholder='Add First Name'
                                                     />
                                                 </div>
-                                                <div className='post_detail_form_location'>
-                                                    <label htmlFor='location'>Location:</label>
-                                                    <input
+                                                <div className='post_detail_form_title'>
+                                                    <span>Industry</span>
+                                                    <input 
                                                         type="text"
-                                                        value={profileOwnerDetails.location}
-                                                        // onChange={(e) => {setLocation(e.target.value); setMessage('');}}
-                                                        placeholder="Enter location"
+                                                        defaultValue={profileOwnerDetails.lastName}
+                                                        placeholder='Add Last Name'
                                                     />
                                                 </div>
                                                 <div className='post_detail_form_update'>
-                                                    <button onClick={handleProfileUpdateSubmit}>Update Profile</button>
+                                                    <button onClick={handleProducerProfileUpdateSubmit}>Update Profile</button>
                                                 </div>
+                                                {
+                                                    message ? 
+                                                    ( <div className='post_detail_informative_message'><span>{message}</span></div> ) : ( <></> )
+                                                }
                                             </>
                                         )
                                     }
@@ -407,7 +704,7 @@ const ProfileDetail = () => {
                                 >
                                     <img 
                                         className="profile-picture" 
-                                        src={'../../public/default_profile.jpg'} 
+                                        src={'/default_profile.jpg'} 
                                         alt="Profile" 
                                         style={{
                                             width: '80%',
@@ -443,7 +740,10 @@ const ProfileDetail = () => {
                                         boxShadow: '0 0 5px rgba(0, 0, 0, 0.3)',
                                     }}
                                 >
-
+                                    {
+                                        userRole === 'FREELANCER' ?
+                                        (<div></div>) : (<div></div>)
+                                    }
                                 </div>
                             </div>
                         )

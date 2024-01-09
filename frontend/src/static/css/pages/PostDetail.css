@@ -43,7 +43,8 @@
 
 .post_detail_form_title span {
     font-size: 1.25rem;
-    margin: 0.25rem 0;
+    margin: 0.3rem 0;
+    text-decoration: underline;
 }
 
 .post_detail_form_title input {
@@ -63,7 +64,8 @@
 
 .post_detail_form_description label {
     font-size: 1.25rem;
-    margin: 0.25rem 0;
+    margin: 0.3rem 0;
+    text-decoration: underline;
 }
 
 .post_detail_form_description textarea {
@@ -81,7 +83,8 @@
 
 .post_detail_form_requirements label {
     font-size: 1.25rem;
-    margin: 0.25rem 0;
+    margin: 0.3rem 0;
+    text-decoration: underline;
 }
 
 .post_detail_form_requirements textarea {
@@ -99,7 +102,8 @@
 
 .post_detail_form_skills label {
     font-size: 1.25rem;
-    margin: 0.25rem 0;
+    margin: 0.3rem 0;
+    text-decoration: underline;
 }
 
 .post_detail_form_skills textarea {
@@ -118,7 +122,8 @@
 
 .post_detail_form_employment_type label {
     font-size: 1.25rem;
-    margin: 0.25rem 0;
+    margin: 0.3rem 0;
+    text-decoration: underline;
 }
 
 .post_detail_form_employment_type select {
@@ -139,7 +144,8 @@
 
 .post_detail_form_location label {
     font-size: 1.25rem;
-    margin: 0.25rem 0;
+    margin: 0.3rem 0;
+    text-decoration: underline;
 }
 
 .post_detail_form_location input {
