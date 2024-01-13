@@ -63,7 +63,7 @@ const FreelancerDashboard = () => {
     // States for dynamic rendering
     const [appliedJobPosts, setAppliedJobPosts] = useState([]);
     const [jobPosts, setJobPosts] = useState([]);
-    const [connectionRequests, setConnectionRequest] = useState([]);
+    // const [connectionRequests, setConnectionRequest] = useState([]);
     const [appliedJob, setAppliedJobs] = useState([]);
     const [incomingConnectionRequests, setIncomingConnectionRequests] = useState([]);
 
@@ -78,7 +78,7 @@ const FreelancerDashboard = () => {
             }
         })
         .then(response => {
-            console.log(response.data)
+            // console.log(response.data)
             const role = response.data.user.payload.role;
             localStorage.setItem("role", role);
             setUserRole(role)
@@ -101,7 +101,7 @@ const FreelancerDashboard = () => {
             }
         })
         .then(response => {
-            console.log(response.data)
+            // console.log(response.data)
             setJobPosts(response.data)
         })
         .catch(error => {
@@ -117,7 +117,7 @@ const FreelancerDashboard = () => {
             }
         })
         .then(response => {
-            console.log(response.data)
+            // console.log(response.data)
             setAppliedJobPosts(response.data)
             setLoading(false)
         })

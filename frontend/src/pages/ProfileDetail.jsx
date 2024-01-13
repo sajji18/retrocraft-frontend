@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router';
 import axios from 'axios';
 import '../static/css/pages/ProducerDashboard.css';
-// import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import '../static/css/pages/ProfileDetail.css';
 import '../static/css/pages/PostDetail.css';
 import Loading from '../components/Loading';
@@ -94,7 +94,7 @@ const ProfileDetail = () => {
         });
     }
 
-    console.log("Hello ", profileOwnerFormDetails);
+    // console.log("Hello ", profileOwnerFormDetails);
 
     const handleAddExperience = () => {
         setMessage('');
@@ -123,7 +123,7 @@ const ProfileDetail = () => {
             }
         })
         .then(response => {
-            console.log(response.data)
+            // console.log(response.data)
             const role = response.data.user.payload.role;
             localStorage.setItem("role", role);
             setUserRole(role)
@@ -143,7 +143,7 @@ const ProfileDetail = () => {
             }
             })
             .then(response => {
-                console.log(response.data)
+                // console.log(response.data)
                 setLoggedInUserDetails(response.data)
                 setIsLoading(false)
             })
@@ -159,7 +159,7 @@ const ProfileDetail = () => {
             }
             })
             .then(response => {
-                console.log(response.data)
+                // console.log(response.data)
                 setLoggedInUserDetails(response.data)
                 setIsLoading(false)
             })
@@ -174,7 +174,7 @@ const ProfileDetail = () => {
         axios
         .get(`http://localhost:3000/profile-owner-details/${role}/${username}`)
         .then(response => {
-            console.log(response.data);
+            // console.log(response.data);
             setProfileOwnerDetails(response.data);
             setIsLoading(false);
         })
@@ -213,7 +213,7 @@ const ProfileDetail = () => {
             }
         })
         .then((response) => {
-            console.log(response.data);
+            // console.log(response.data);
             setProfileOwnerDetails(response.data.updatedProfile);
             setMessage(response.data.message);
         })
@@ -234,7 +234,7 @@ const ProfileDetail = () => {
             }
         })
         .then((response) => {
-            console.log(response.data);
+            // console.log(response.data);
             setProfileOwnerDetails(response.data.updatedProfile);
             setMessage(response.data.message);
         })
@@ -243,10 +243,16 @@ const ProfileDetail = () => {
         })
     }
 
+    const handleProfileClick = () => {
+        window.location.href = `/profile/${loggedInUserDetails.role}/${loggedInUserDetails.username}`;
+    }
+
     const handleLogout = () => {
         localStorage.clear();
         navigate("/");
     }
+
+    console.log(profileOwnerDetails);
 
     if (token === null) {
         return (
@@ -261,7 +267,7 @@ const ProfileDetail = () => {
                 <>
                     <div className='producer_navbar_container'>
                         <div className='producer_navbar_left'>
-                            <a href='/producer-dashboard'>
+                            <a href='/'>
                                 <span className='producer_nav_span_1'>Retrocraft</span>
                                 <span className='producer_nav_span_2'>Hub</span>
                             </a>
@@ -622,35 +628,37 @@ const ProfileDetail = () => {
                                                         disabled
                                                     />
                                                 </div>
-                                                <div className='post_detail_form_description'>
-                                                    <label htmlFor="description">About:</label>
-                                                    <textarea 
-                                                        name="description" 
-                                                        rows="5" 
-                                                        cols="67"
-                                                        defaultValue={profileOwnerDetails.bio}
-                                                        // onChange={(e) => {setDescription(e.target.value); setMessage('')}}
-                                                        placeholder="Add Bio"
-                                                    />
-                                                </div>
                                                 <div className='post_detail_form_title'>
                                                     <span>Company Name</span>
                                                     <input 
                                                         type="text"
-                                                        defaultValue={profileOwnerDetails.firstName}
-                                                        placeholder='Add First Name'
+                                                        defaultValue={profileOwnerDetails.companyName}
+                                                        onChange={(e) => handleChange(e, 'companyName')}
+                                                        placeholder='Add Company Name'
                                                     />
                                                 </div>
                                                 <div className='post_detail_form_title'>
                                                     <span>Industry</span>
                                                     <input 
                                                         type="text"
-                                                        defaultValue={profileOwnerDetails.lastName}
-                                                        placeholder='Add Last Name'
+                                                        defaultValue={profileOwnerDetails.industry}
+                                                        onChange={(e) => handleChange(e, 'industry')}
+                                                        placeholder='Add Industry Name'
+                                                    />
+                                                </div>
+                                                <div className='post_detail_form_description'>
+                                                    <label htmlFor="description">About:</label>
+                                                    <textarea 
+                                                        name="description" 
+                                                        rows="5" 
+                                                        cols="67"
+                                                        defaultValue={profileOwnerDetails.about}
+                                                        onChange={(e) => handleChange(e, 'about')}
+                                                        placeholder="Add to About Section"
                                                     />
                                                 </div>
                                                 <div className='post_detail_form_update'>
-                                                    <button onClick={handleProducerProfileUpdateSubmit}>Update Profile</button>
+                                                    <button style={{ margin: '1rem 0' }} onClick={handleProducerProfileUpdateSubmit}>Update Profile</button>
                                                 </div>
                                                 {
                                                     message ? 
@@ -676,13 +684,13 @@ const ProfileDetail = () => {
                 <>
                     <div className='producer_navbar_container'>
                         <div className='producer_navbar_left'>
-                            <a href='/producer-dashboard'>
+                            <a href='/'>
                                 <span className='producer_nav_span_1'>Retrocraft</span>
                                 <span className='producer_nav_span_2'>Hub</span>
                             </a>
                         </div>
                         <div className='producer_navbar_right'>
-                            {/* <button className='producer_profile_button' onClick={handleProfileClick}><AccountCircleIcon style={{ fontSize: '2rem' }}/></button> */}
+                            <button className='producer_profile_button' onClick={handleProfileClick}><AccountCircleIcon style={{ fontSize: '2rem' }}/></button>
                             <button className='producer_navbar_logout' onClick={handleLogout}>Logout</button>
                         </div>
                     </div>
@@ -738,11 +746,106 @@ const ProfileDetail = () => {
                                     style={{
                                         border: '2px solid #fff',
                                         boxShadow: '0 0 5px rgba(0, 0, 0, 0.3)',
+                                        overflowY: 'auto'
                                     }}
                                 >
                                     {
-                                        userRole === 'FREELANCER' ?
-                                        (<div></div>) : (<div></div>)
+                                        profileOwnerDetails.role === 'FREELANCER' ?
+                                        (
+                                            <div>
+                                                <div className='general_post_detail_heading'>
+                                                    <h1><span style={{ color: 'black' }}>Profile of</span> {profileOwnerDetails.firstName} {profileOwnerDetails.lastName}</h1>
+                                                </div>
+                                                <div className='general_post_detail_description'>
+                                                    <h2>Bio: </h2>
+                                                    <span style={{ fontSize: '1.25rem' }}>{profileOwnerDetails.bio}</span>
+                                                </div>
+                                                <div className='general_post_detail_description'>
+                                                    <h2>Work Experience: </h2>
+                                                    {
+                                                        profileOwnerDetails.experience.map((exp, index) => {
+                                                            return (
+                                                                <div
+                                                                    style={{
+                                                                        backgroundColor: '#f6f7f8',
+                                                                        minHeight: '2.5rem',
+                                                                        borderRadius: '0.75rem',
+                                                                        padding: '1rem',
+                                                                        display: 'flex',
+                                                                        justifyContent: 'space-between',
+                                                                        alignItems: 'center'
+                                                                    }}    
+                                                                >
+                                                                    <span style={{ fontSize: '1.5rem', flex: 1 }}>{exp.jobTitle}</span>
+                                                                    <span style={{ fontSize: '1.5rem', flex: 1, textAlign: 'center', marginRight: '2rem' }}>{exp.company}</span>
+                                                                    <span style={{ flex: 1, textAlign: 'right' }}>{new Date(exp.startDate).toLocaleDateString()} - {new Date(exp.endDate).toLocaleDateString()}</span>
+                                                                </div>
+                                                            )
+                                                        })
+                                                    }
+                                                </div>
+                                                <div className='general_post_detail_description'>
+                                                    <h2>Education: </h2>
+                                                    {
+                                                        profileOwnerDetails.education.map((edu, index) => {
+                                                            return (
+                                                                <div
+                                                                    style={{
+                                                                        backgroundColor: '#f6f7f8',
+                                                                        minHeight: '2.5rem',
+                                                                        borderRadius: '0.75rem',
+                                                                        padding: '1rem',
+                                                                        display: 'flex',
+                                                                        justifyContent: 'space-between',
+                                                                        alignItems: 'center'
+                                                                    }}    
+                                                                >
+                                                                    <span style={{ fontSize: '1.5rem', flex: 1 }}>{edu.school}</span>
+                                                                    <span style={{ fontSize: '1.5rem', flex: 1, textAlign: 'center', marginRight: '2rem' }}>{edu.degree}</span>
+                                                                    <span style={{ flex: 1, textAlign: 'right' }}>{new Date(edu.graduationYear).toLocaleDateString()}</span>
+                                                                </div>
+                                                            )
+                                                        })
+                                                    }
+                                                </div>
+                                                <div className='general_post_detail_skills'>
+                                                    <h2>Skills:</h2>
+                                                    <ul
+                                                        style={{
+                                                            margin: '0 1rem'
+                                                        }}
+                                                    >
+                                                    {
+                                                        profileOwnerDetails.skills.map((skill, index) => {
+                                                            return (
+                                                                <li style={{ fontSize: '1.5rem', margin: '0.5rem' }} key={index}>{skill}</li> 
+                                                            )
+                                                        })
+                                                    }
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        ) 
+                                        : 
+                                        (
+                                            <div>
+                                                <div className='general_post_detail_heading'>
+                                                    <h1><span style={{ color: 'black' }}>Profile of</span> {profileOwnerDetails.username}</h1>
+                                                </div>
+                                                <div className='general_post_detail_description'>
+                                                    <h2>Company: </h2>
+                                                    <span style={{ fontSize: '1.25rem' }}>{profileOwnerDetails.companyName}</span>
+                                                </div>
+                                                <div className='general_post_detail_description'>
+                                                    <h2>Industry: </h2>
+                                                    <span>{profileOwnerDetails.industry}</span>
+                                                </div>
+                                                <div className='general_post_detail_description'>
+                                                    <h2>About: </h2>
+                                                    <span>{profileOwnerDetails.about}</span>
+                                                </div>
+                                            </div>
+                                        )
                                     }
                                 </div>
                             </div>

@@ -176,7 +176,7 @@
 .producer_dash_job_card_bottom_right {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: center;
     align-items: center;
 }
 
@@ -184,10 +184,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    column-gap: 7px;
     width: 5rem;
-    padding: 0.5rem 0.25rem;
-    font-size: 1.125rem;
+    font-size: 0.8rem;
     font-weight: bold;
     cursor: pointer;
     color: white;

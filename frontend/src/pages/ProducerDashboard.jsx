@@ -3,6 +3,34 @@ import { useNavigate } from 'react-router';
 import axios from 'axios';
 import '../static/css/pages/ProducerDashboard.css';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
+import Loading from '../components/Loading';
+
+const style = {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 350,
+    height: 350, 
+    maxHeight: '80vh',
+    overflowY: 'auto',
+    bgcolor: 'background.paper',
+    border: 'none',
+    borderRadius: '0.75rem',
+    padding: '0rem',
+    boxShadow: 24,
+    p: 4,
+    overflowY: 'auto'
+    // backdropFilter: 'blur(10px)'
+};
 
 const ProducerDashboard = () => {
     const [userRole, setUserRole] = useState(localStorage.getItem("role"));
@@ -10,6 +38,27 @@ const ProducerDashboard = () => {
     const [token, setToken] = useState(localStorage.getItem("token"));
     const [myJobPosts, setMyJobPosts] = useState([]);
     const navigate = useNavigate();
+
+    const [loading, setLoading] = useState(true)
+    const [incomingConnectionRequests, setIncomingConnectionRequests] = useState([]);
+
+    // Modal
+    const [open, setOpen] = useState(false);
+    const [selectedJob, setSelectedJob] = useState(null)
+
+    const handleOpen = () => {
+        setOpen(true);
+    }
+
+    const handleClose = () => {
+        setOpen(false);
+        setSelectedJob(null)
+    }
+
+    const handleApplicantsClick = (job) => {
+        setSelectedJob(job);
+        handleOpen();
+    };
 
     // Create Job Form State:
     const [title, setTitle] = useState('');
@@ -90,6 +139,7 @@ const ProducerDashboard = () => {
         .then(response => {
             console.log(response.data)
             setMyJobPosts(response.data)
+            setLoading(false)
         })
         .catch(error => {
             console.error('Error fetching user data:', error);
@@ -137,31 +187,137 @@ const ProducerDashboard = () => {
                             { 
                                 myJobPosts.map((job, index) => {
                                     return (
-                                        <div className='producer_dash_job_card' key={job._id} onClick={() => navigate(`/job/${job._id}`)}>
-                                            <div className='producer_dash_job_card_top'>
-                                                <span>{job.title}</span>
-                                            </div>
-                                            <div className='producer_dash_job_card_bottom'>
-                                                <div className='producer_dash_job_card_bottom_left'>
-                                                    <span>{job.employmentType}, {job.location}</span>
+                                        <>
+                                            <div className='producer_dash_job_card' key={job._id}>
+                                                <div className='producer_dash_job_card_top'>
+                                                    <span>{job.title}</span>
                                                 </div>
-                                                <div className='producer_dash_job_card_bottom_right'>
-                                                    {/* <button onClick={() => navigate(`/job/${job._id}`)}>View</button> */}
+                                                <div className='producer_dash_job_card_bottom'>
+                                                    <div className='producer_dash_job_card_bottom_left'>
+                                                        <span>{job.employmentType}, {job.location}</span>
+                                                    </div>
+                                                    <div className='producer_dash_job_card_bottom_right' style={{
+                                                        display: 'flex',
+                                                        flexDirection: 'row',
+                                                        justifyContent: 'center',
+                                                        alignItems: 'center'
+                                                    }}>
+                                                        <button onClick={() => navigate(`/job/${job._id}`)} style={{ padding: '0.75rem 0rem', margin: '0 0.5rem' }}>View Job</button>
+                                                        <button onClick={() => handleApplicantsClick(job)} style={{ padding: '0.75rem 2.5rem' }}>Applicants</button>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                            
+                                        </>
                                     )
                                 })
                             }
                         </div>
                     </div>
+
+                    {selectedJob && (
+                        <Modal
+                            open={open}
+                            onClose={handleClose}
+                            aria-labelledby="modal-modal-title"
+                            aria-describedby="modal-modal-description"
+                        >
+                            <Box sx={style}>
+                                <Typography id="modal-modal-title" variant="h6" component="h2" style={{ marginBottom: '1rem', fontSize: '1.25rem', fontWeight: 'bold' }}>
+                                    Applicants for {selectedJob.title}
+                                </Typography>
+                                {
+                                    selectedJob.applicants.length ? 
+                                    (
+                                        <div 
+                                            style={{
+                                                background: '#f6f7f8',
+                                                height: '100%',
+                                                width: '100%',
+                                                display: 'flex',
+                                                justifyContent: 'flex-start',
+                                                alignItems: 'center',
+                                                flexDirection: 'column',
+                                                overflowY: 'auto',
+                                                borderRadius: '1rem'
+                                            }}
+                                        >
+                                            {
+                                                selectedJob.applicants.map((applicant, index) => {
+                                                    return (
+                                                        <div 
+                                                            style={{
+                                                                display: 'flex',
+                                                                flexDirection: 'row',
+                                                                justifyContent: 'space-between',
+                                                                alignItems: 'center',
+                                                                backgroundColor: '#ffffff',
+                                                                margin: '1rem 0',
+                                                                minHeight: '3.5rem',
+                                                                width: '90%',
+                                                                borderRadius: '0.5rem',
+                                                                padding: '0.5rem'
+                                                            }}
+                                                        >
+                                                            <div 
+                                                                className='serial'
+                                                                style={{
+                                                                    flex: 1
+                                                                }}
+                                                            >
+                                                                <span style={{  }}>{++index}.</span> 
+                                                                <span style={{  }}>{applicant.username}</span>
+                                                            </div>
+                                                        </div>
+                                                    )
+                                                })
+                                            }
+                                        </div>
+                                    )
+                                    :
+                                    (
+                                        <div 
+                                            style={{
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                                height: '100%',
+                                                width: '100%',
+                                                fontSize: '1.5rem',
+                                                backgroundColor: '#f6f7f8',
+                                                borderRadius: '1rem'
+                                            }}
+                                        >
+                                            No Applicants Yet
+                                        </div>
+                                    )
+                                }
+                            </Box>
+                        </Modal>
+                    )}
                     
                     <div className='producer_dash_main_right_area'>
                         <div className='producer_dash_main_right_head'>
                             <span>Pending Connection Requests</span>
                         </div>
                         <div className='producer_dash_main_requests'>
-
+                            {
+                                incomingConnectionRequests.length ? 
+                                (
+                                    <div></div>
+                                )
+                                :
+                                (
+                                    loading ?
+                                    (
+                                        <div style={{ height: '100%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}><Loading /></div>
+                                    )
+                                    :
+                                    (
+                                        <div style={{ height: '100%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>No Pending Connection Requests</div>
+                                    )
+                                )
+                            }
                         </div>
                         <div className='producer_dash_main_right_head'>
                             <span>Create Job</span>
