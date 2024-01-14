@@ -263,7 +263,16 @@ const FreelancerDashboard = () => {
                             <span>Blogs You Might Like:</span>
                         </div>
                         <div className='freelancer_dash_main_requests'>
-
+                        {
+                            loading ?
+                                (
+                                    <div style={{ height: '100%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}><Loading /></div>
+                                )
+                                :
+                                (
+                                    <div style={{ height: '100%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>No Blog Posts Available Right Now</div>
+                                )
+                        }
                         </div>
                     </div>
                 </div>

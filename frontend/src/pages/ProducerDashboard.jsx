@@ -8,6 +8,8 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import Loading from '../components/Loading';
+import DoneIcon from '@mui/icons-material/Done';
+import ClearIcon from '@mui/icons-material/Clear';
 
 const style = {
     display: 'flex',
@@ -40,39 +42,41 @@ const ProducerDashboard = () => {
     const navigate = useNavigate();
 
     const [loading, setLoading] = useState(true)
-    const [incomingConnectionRequests, setIncomingConnectionRequests] = useState([]);
+    const [incomingConnectionRequests, setIncomingConnectionRequests] = useState([])
+    const [created, setCreated] = useState(false)
+    const [accepted, setAccepted] = useState(false)
 
     // Modal
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(false)
     const [selectedJob, setSelectedJob] = useState(null)
 
     const handleOpen = () => {
-        setOpen(true);
+        setOpen(true)
     }
 
     const handleClose = () => {
-        setOpen(false);
+        setOpen(false)
         setSelectedJob(null)
     }
 
     const handleApplicantsClick = (job) => {
-        setSelectedJob(job);
-        handleOpen();
+        setSelectedJob(job)
+        handleOpen()
     };
 
     // Create Job Form State:
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [requirements, setRequirements] = useState(['']);
-    const [skillsRequired, setSkillsRequired] = useState(['']);
-    const [employmentType, setEmploymentType] = useState('');
-    const [location, setLocation] = useState('');
-    const [salary, setSalary] = useState('');
+    const [title, setTitle] = useState('')
+    const [description, setDescription] = useState('')
+    const [requirements, setRequirements] = useState([''])
+    const [skillsRequired, setSkillsRequired] = useState([''])
+    const [employmentType, setEmploymentType] = useState('')
+    const [location, setLocation] = useState('')
+    const [salary, setSalary] = useState('')
 
     const handleJobFormSubmit = (e) => {
-        e.preventDefault();
-        const requirementsArray = requirements.split('\n').map((item) => item.trim());
-        const skillsRequiredArray = skillsRequired.split('\n').map((item) => item.trim());
+        e.preventDefault()
+        const requirementsArray = requirements.split('\n').map((item) => item.trim())
+        const skillsRequiredArray = skillsRequired.split('\n').map((item) => item.trim())
 
         axios
         .post('http://localhost:3000/producer/jobs',{
@@ -91,6 +95,7 @@ const ProducerDashboard = () => {
         .then((response) => {
             setMyJobPosts((prevJobs) => [...prevJobs, response.data]);
 
+            setCreated(true);
             setTitle('');
             setDescription('');
             setRequirements('');
@@ -144,7 +149,53 @@ const ProducerDashboard = () => {
         .catch(error => {
             console.error('Error fetching user data:', error);
         });
-    }, [])
+    }, [created])
+
+    useEffect(() => {
+        axios
+        .get('http://localhost:3000/all-incoming-connection-requests', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then((response) => {
+            console.log(response.data)
+            setIncomingConnectionRequests(response.data);
+        })
+        .catch((error) => {
+            console.error("Error fetching incoming connection requests: ", error)
+        })
+    }, [accepted])
+
+    // console.log(incomingConnectionRequests)
+
+    const handleAcceptConnectionRequest = (incomingConnectionRequest) => {
+        axios
+        .patch(`http://localhost:3000/accept-connection-request/${incomingConnectionRequest._id}`,
+        null, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then((response) => {
+            console.log(response.data)
+            setAccepted(true);
+            // setIncomingConnectionRequests((prevRequests) =>
+            //     prevRequests.map((request) =>
+            //         request._id === incomingConnectionRequest._id
+            //         ? { ...request, status: 'accepted' }
+            //         : request
+            //     )
+            // );
+        })
+        .catch((error) => {
+            console.error("Some error accepting the request: ", error)
+        })
+    }
+
+    const handleRejectConnectionRequest = () => {
+
+    }
 
     const handleProfileClick = () => {
         navigate(`/profile/${userRole}/${username}`)
@@ -223,7 +274,7 @@ const ProducerDashboard = () => {
                             aria-describedby="modal-modal-description"
                         >
                             <Box sx={style}>
-                                <Typography id="modal-modal-title" variant="h6" component="h2" style={{ marginBottom: '1rem', fontSize: '1.25rem', fontWeight: 'bold' }}>
+                                <Typography id="modal-modal-title" variant="h6" component="h2" style={{ marginBottom: '0.75rem', fontSize: '1.25rem', fontWeight: 'bold' }}>
                                     Applicants for {selectedJob.title}
                                 </Typography>
                                 {
@@ -246,27 +297,36 @@ const ProducerDashboard = () => {
                                                 selectedJob.applicants.map((applicant, index) => {
                                                     return (
                                                         <div 
+                                                            className='applicants_card'
                                                             style={{
                                                                 display: 'flex',
                                                                 flexDirection: 'row',
                                                                 justifyContent: 'space-between',
                                                                 alignItems: 'center',
-                                                                backgroundColor: '#ffffff',
-                                                                margin: '1rem 0',
-                                                                minHeight: '3.5rem',
+                                                                margin: '0.5rem 0',
+                                                                minHeight: '3rem',
                                                                 width: '90%',
                                                                 borderRadius: '0.5rem',
-                                                                padding: '0.5rem'
+                                                                padding: '0.5rem',
+                                                                cursor: 'pointer',
                                                             }}
                                                         >
                                                             <div 
-                                                                className='serial'
                                                                 style={{
-                                                                    flex: 1
+                                                                    display: 'flex',
+                                                                    flexDirection: 'row',
+                                                                    justifyContent: 'space-between',
+                                                                    alignItems: 'center',
+                                                                    width: '100%'
                                                                 }}
                                                             >
-                                                                <span style={{  }}>{++index}.</span> 
-                                                                <span style={{  }}>{applicant.username}</span>
+                                                                <div>
+                                                                    <span style={{ margin: '0 0.75rem' }}>{++index}.</span> 
+                                                                    <span style={{ margin: '0 0.75rem', fontSize: '1.25rem' }}>{applicant.username}</span>
+                                                                </div>
+                                                                <div>
+                                                                    <span><a href={`/profile/${applicant.role}/${applicant.username}`} style={{ textDecoration: 'none', marginRight: '1rem' }}>View Profile</a></span>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     )
@@ -285,7 +345,8 @@ const ProducerDashboard = () => {
                                                 width: '100%',
                                                 fontSize: '1.5rem',
                                                 backgroundColor: '#f6f7f8',
-                                                borderRadius: '1rem'
+                                                borderRadius: '1rem',
+                                                // transform: 'translateY(-7.5%)'
                                             }}
                                         >
                                             No Applicants Yet
@@ -300,11 +361,80 @@ const ProducerDashboard = () => {
                         <div className='producer_dash_main_right_head'>
                             <span>Pending Connection Requests</span>
                         </div>
-                        <div className='producer_dash_main_requests'>
+                        <div className='producer_dash_main_requests'
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'flex-start',
+                                alignItems: 'center',
+                                padding: '0.5rem',
+                            }}
+                        >
                             {
                                 incomingConnectionRequests.length ? 
                                 (
-                                    <div></div>
+                                    incomingConnectionRequests.map((incomingConnectionRequest, index) => {
+                                        return (
+                                            <div 
+                                                className='container'
+                                                style={{
+                                                    width: '100%',
+                                                    minHeight: '4rem',
+                                                    borderRadius: '1rem',
+                                                    padding: '0.25rem 0',
+                                                    display: 'flex',
+                                                    flexDirection: 'row',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'space-between',
+                                                    margin: '0.25rem 0',
+                                                }}
+                                            >
+                                                <div 
+                                                    style={{
+                                                        display: 'flex',
+                                                        flexDirection: 'row',
+                                                        justifyContent: 'space-between',
+                                                        alignItems: 'center',
+                                                        width: '100%'
+                                                    }}
+                                                >
+                                                    <div>
+                                                        <span style={{ margin: '0 1.5rem' }}>{++index}.</span> 
+                                                        <span style={{ margin: '0 1.5rem', fontSize: '1.25rem' }}><a href={`/profile/${incomingConnectionRequest.senderId.role}/${incomingConnectionRequest.senderId.username}`}>{incomingConnectionRequest.senderId.username}</a></span>
+                                                        <span style={{ margin: '0 1.5rem', fontSize: '1.25rem' }}>{incomingConnectionRequest.senderId.role}</span>
+                                                    </div>
+                                                    <div>
+                                                        <button
+                                                            style={{
+                                                                border: 'none',
+                                                                background: 'none',
+                                                                padding: '0',
+                                                                outline: 'none',
+                                                                margin: '0 0.25rem',
+                                                                cursor: 'pointer'
+                                                            }}
+                                                            onClick={() => handleAcceptConnectionRequest(incomingConnectionRequest)}
+                                                        >
+                                                            <DoneIcon />
+                                                        </button>
+                                                        <button
+                                                            style={{
+                                                                border: 'none',
+                                                                background: 'none',
+                                                                padding: '0',
+                                                                outline: 'none',
+                                                                margin: '0 1.25rem',
+                                                                cursor: 'pointer'
+                                                            }}
+                                                            onClick={handleRejectConnectionRequest}
+                                                        >
+                                                            <ClearIcon />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )
+                                    })
                                 )
                                 :
                                 (

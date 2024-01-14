@@ -417,3 +417,27 @@
     background-color: #22aa58;
     cursor: pointer;
 }
+
+/* Modal */
+.applicants_card {
+    background-color: #ffffff;
+}
+.applicants_card:hover {
+    background-color: #8DD7AB;
+    color: white;
+    cursor: pointer;
+}
+
+.container {
+    background-color: #F6F7F8;
+}
+
+.container:hover {
+    background-color: #8DD7AB;
+    color: white;
+}
+
+.container div div span a {
+    color: inherit;
+    text-decoration: none;
+}

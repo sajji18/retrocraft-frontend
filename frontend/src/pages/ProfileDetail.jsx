@@ -3,9 +3,27 @@ import { useNavigate, useParams } from 'react-router';
 import axios from 'axios';
 import '../static/css/pages/ProducerDashboard.css';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AddIcon from '@mui/icons-material/Add';
+import DoneIcon from '@mui/icons-material/Done';
 import '../static/css/pages/ProfileDetail.css';
 import '../static/css/pages/PostDetail.css';
 import Loading from '../components/Loading';
+import PendingIcon from '@mui/icons-material/Pending';
+
+const connectButtonStyle = {
+    width: '7rem',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: '0.5rem',
+    border: 'none',
+    borderRadius: '0.5rem',
+    padding: '0.3rem 0.5rem',
+    backgroundColor: '#8DD7AB',
+    color: 'white',
+    fontWeight: 'bold',
+    cursor: 'pointer'
+}
 
 const ProfileDetail = () => {
     const [userRole, setUserRole] = useState(localStorage.getItem("role"));
@@ -17,6 +35,9 @@ const ProfileDetail = () => {
     const [loggedInUserDetails, setLoggedInUserDetails] = useState({});
     const [profileOwnerDetails, setProfileOwnerDetails] = useState({});
     const [message, setMessage] = useState('');
+
+    const [connectionStatus, setConnectionStatus] = useState('');
+    // const [pending, setPending] = useState(false);
 
     // Profile Form States
     const [profileOwnerFormDetails, setProfileOwnerFormDetails] = useState({
@@ -100,7 +121,7 @@ const ProfileDetail = () => {
         setMessage('');
         setProfileOwnerFormDetails((prevDetails) => ({
             ...prevDetails,
-            experience: [...prevDetails.experience, { jobTitle: '', company: '', startDate: '', endDate: '', description: '' }],
+            experience: [...prevDetails.experience, { jobTitle: '', company: '', description: '', startDate: '', endDate: '' }],
         }));
     }
         
@@ -190,6 +211,28 @@ const ProfileDetail = () => {
         })
     }, [profileOwnerDetails])
 
+    useEffect(() => {
+        if (profileOwnerDetails.role !== loggedInUserDetails.role && profileOwnerDetails.username !== loggedInUserDetails.username) {
+            axios
+            .get(`http://localhost:3000/check-connection/${profileOwnerDetails.role}/${profileOwnerDetails.username}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            .then((response) => {
+                console.log(response.data);
+                setConnectionStatus(response.data.status);
+            })
+            .catch((error) => {
+                console.error("Error checking connection between logged user and profile owner: ", error);
+            })
+        }
+    }, [profileOwnerDetails])
+
+    useEffect(() => {
+
+    }, [])
+
     // const handleProfileClick = () => {
     //     navigate(`/profile/${username}`)
     // }
@@ -243,6 +286,26 @@ const ProfileDetail = () => {
         })
     }
 
+    const handleConnectClick = () => {
+        axios
+        .post('http://localhost:3000/send-connection-request', {
+            receiverId: profileOwnerDetails._id,
+            receiverType: profileOwnerDetails.role
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then((response) => {
+            console.log(response.data)
+            // setPending(true);
+            setConnectionStatus(response.data.status)
+        })
+        .catch((error) => {
+            console.error("Some error sending connection request: ", error);
+        })
+    }
+
     const handleProfileClick = () => {
         window.location.href = `/profile/${loggedInUserDetails.role}/${loggedInUserDetails.username}`;
     }
@@ -252,7 +315,7 @@ const ProfileDetail = () => {
         navigate("/");
     }
 
-    console.log(profileOwnerDetails);
+    // console.log(profileOwnerDetails);
 
     if (token === null) {
         return (
@@ -290,7 +353,7 @@ const ProfileDetail = () => {
                                         justifyContent: 'space-between',
                                         flexDirection: 'column',
                                         alignItems: 'center',
-                                        paddingBottom: '1rem',
+                                        paddingBottom: '2.75rem',
                                     }}
                                 >
                                     <img 
@@ -322,9 +385,16 @@ const ProfileDetail = () => {
                                         <span>
                                             {profileOwnerDetails.email}
                                         </span>
-                                        <span>
-                                            {/* Connections {profileOwnerDetails.} */}
-                                        </span>
+                                        <div style={{
+                                            display: 'flex',
+                                            justifyContent: 'space-evenly',
+                                            alignItems: 'center',
+                                            flexDirection: 'column',
+                                            margin: '0.25rem 0'
+                                        }}>
+                                            <a href="" style={{ textDecoration: 'none' }}><span>Freelancer Connections: {profileOwnerDetails?.freelancerConnections?.length ?  (profileOwnerDetails.freelancerConnections.length) : (0)}</span></a>
+                                            <a href="" style={{ textDecoration: 'none' }}><span>Producer Connections: {profileOwnerDetails?.producerConnections?.length ?  (profileOwnerDetails.producerConnections.length) : (0)}</span></a>
+                                        </div>
                                     </div>
                                 </div>
                                 <div 
@@ -707,7 +777,7 @@ const ProfileDetail = () => {
                                         justifyContent: 'space-between',
                                         flexDirection: 'column',
                                         alignItems: 'center',
-                                        paddingBottom: '1rem',
+                                        paddingBottom: '5.5rem',
                                     }}
                                 >
                                     <img 
@@ -739,6 +809,52 @@ const ProfileDetail = () => {
                                         <span>
                                             {profileOwnerDetails.email}
                                         </span>
+                                        <div style={{
+                                            display: 'flex',
+                                            justifyContent: 'space-evenly',
+                                            alignItems: 'center',
+                                            flexDirection: 'column',
+                                            margin: '0.25rem 0'
+                                        }}>
+                                            <a href="" style={{ textDecoration: 'none' }}><span>Freelancer Connections: {profileOwnerDetails?.freelancerConnections?.length ?  (profileOwnerDetails.freelancerConnections.length) : (0)}</span></a>
+                                            <a href="" style={{ textDecoration: 'none' }}><span>Producer Connections: {profileOwnerDetails?.producerConnections?.length ?  (profileOwnerDetails.producerConnections.length) : (0)}</span></a>
+                                            {
+                                                connectionStatus === 'connected' ? 
+                                                (
+                                                    <button 
+                                                        style={connectButtonStyle}
+                                                        // onClick={handleDisconnectClick}
+                                                    >
+                                                    
+                                                        <span style={{ marginRight: '0.25rem' }}>Connected</span>
+                                                        <DoneIcon />
+                                                    </button>
+                                                )
+                                                :
+                                                (
+                                                    connectionStatus === 'pending' ? 
+                                                    (
+                                                        <button 
+                                                            style={connectButtonStyle}
+                                                            disabled
+                                                        >
+                                                            <span style={{ marginRight: '0.25rem' }}>Pending</span>
+                                                            <PendingIcon />
+                                                        </button>
+                                                    )
+                                                    :
+                                                    (
+                                                        <button 
+                                                        style={connectButtonStyle}
+                                                        onClick={handleConnectClick}
+                                                    >
+                                                        <span style={{ marginRight: '0.25rem' }}>Connect</span>
+                                                        <AddIcon />
+                                                    </button>
+                                                    )
+                                                )
+                                            }
+                                        </div>
                                     </div>
                                 </div>
                                 <div 
@@ -754,75 +870,101 @@ const ProfileDetail = () => {
                                         (
                                             <div>
                                                 <div className='general_post_detail_heading'>
-                                                    <h1><span style={{ color: 'black' }}>Profile of</span> {profileOwnerDetails.firstName} {profileOwnerDetails.lastName}</h1>
+                                                    <h1><span style={{ color: 'black' }}>Profile of</span> {profileOwnerDetails.firstName ? profileOwnerDetails.firstName : "Full"} {profileOwnerDetails.lastName ? profileOwnerDetails.lastName : "Name"}</h1>
                                                 </div>
                                                 <div className='general_post_detail_description'>
-                                                    <h2>Bio: </h2>
-                                                    <span style={{ fontSize: '1.25rem' }}>{profileOwnerDetails.bio}</span>
+                                                    <h2 style={{ margin: '0.75rem 0' }}>Bio: </h2>
+                                                    <span style={{ fontSize: '1.25rem', margin: '0.75rem 0' }}>{profileOwnerDetails?.bio ? profileOwnerDetails.bio : "Bio Not Added Yet" }</span>
                                                 </div>
                                                 <div className='general_post_detail_description'>
-                                                    <h2>Work Experience: </h2>
+                                                    <h2 style={{ margin: '0.75rem 0' }}>Work Experience: </h2>
                                                     {
-                                                        profileOwnerDetails.experience.map((exp, index) => {
-                                                            return (
-                                                                <div
-                                                                    style={{
-                                                                        backgroundColor: '#f6f7f8',
-                                                                        minHeight: '2.5rem',
-                                                                        borderRadius: '0.75rem',
-                                                                        padding: '1rem',
-                                                                        display: 'flex',
-                                                                        justifyContent: 'space-between',
-                                                                        alignItems: 'center'
-                                                                    }}    
-                                                                >
-                                                                    <span style={{ fontSize: '1.5rem', flex: 1 }}>{exp.jobTitle}</span>
-                                                                    <span style={{ fontSize: '1.5rem', flex: 1, textAlign: 'center', marginRight: '2rem' }}>{exp.company}</span>
-                                                                    <span style={{ flex: 1, textAlign: 'right' }}>{new Date(exp.startDate).toLocaleDateString()} - {new Date(exp.endDate).toLocaleDateString()}</span>
-                                                                </div>
-                                                            )
-                                                        })
+                                                        profileOwnerDetails.experience.length ? 
+                                                        (
+                                                            profileOwnerDetails.experience.map((exp, index) => {
+                                                                return (
+                                                                    <div
+                                                                        style={{
+                                                                            backgroundColor: '#f6f7f8',
+                                                                            minHeight: '2.5rem',
+                                                                            borderRadius: '0.75rem',
+                                                                            padding: '1rem',
+                                                                            display: 'flex',
+                                                                            justifyContent: 'space-between',
+                                                                            alignItems: 'center',
+                                                                            margin: '0.75rem 0'
+                                                                        }}    
+                                                                    >
+                                                                        <span style={{ fontSize: '1.5rem', flex: 1 }}>{exp.jobTitle}</span>
+                                                                        <span style={{ fontSize: '1.5rem', flex: 1, textAlign: 'center', marginRight: '2rem' }}>{exp.company}</span>
+                                                                        <span style={{ flex: 1, textAlign: 'right' }}>{new Date(exp.startDate).toLocaleDateString()} - {new Date(exp.endDate).toLocaleDateString()}</span>
+                                                                    </div>
+                                                                )
+                                                            })
+                                                        )
+                                                        :
+                                                        (
+                                                            <span style={{ fontSize: '1.25rem', margin: '0.75rem 0' }}>Experience Not Added Yet</span>
+                                                        )
                                                     }
                                                 </div>
                                                 <div className='general_post_detail_description'>
-                                                    <h2>Education: </h2>
+                                                    <h2 style={{ margin: '0.75rem 0' }}>Education: </h2>
                                                     {
-                                                        profileOwnerDetails.education.map((edu, index) => {
-                                                            return (
-                                                                <div
-                                                                    style={{
-                                                                        backgroundColor: '#f6f7f8',
-                                                                        minHeight: '2.5rem',
-                                                                        borderRadius: '0.75rem',
-                                                                        padding: '1rem',
-                                                                        display: 'flex',
-                                                                        justifyContent: 'space-between',
-                                                                        alignItems: 'center'
-                                                                    }}    
-                                                                >
-                                                                    <span style={{ fontSize: '1.5rem', flex: 1 }}>{edu.school}</span>
-                                                                    <span style={{ fontSize: '1.5rem', flex: 1, textAlign: 'center', marginRight: '2rem' }}>{edu.degree}</span>
-                                                                    <span style={{ flex: 1, textAlign: 'right' }}>{new Date(edu.graduationYear).toLocaleDateString()}</span>
-                                                                </div>
-                                                            )
-                                                        })
+                                                        profileOwnerDetails.education.length ? 
+                                                        (
+                                                            profileOwnerDetails.education.map((edu, index) => {
+                                                                return (
+                                                                    <div
+                                                                        style={{
+                                                                            backgroundColor: '#f6f7f8',
+                                                                            minHeight: '2.5rem',
+                                                                            borderRadius: '0.75rem',
+                                                                            padding: '1rem',
+                                                                            display: 'flex',
+                                                                            justifyContent: 'space-between',
+                                                                            alignItems: 'center',
+                                                                            margin: '0.75rem 0'
+                                                                        }}    
+                                                                    >
+                                                                        <span style={{ fontSize: '1.5rem', flex: 1 }}>{edu.school}</span>
+                                                                        <span style={{ fontSize: '1.5rem', flex: 1, textAlign: 'center', marginRight: '2rem' }}>{edu.degree}</span>
+                                                                        <span style={{ flex: 1, textAlign: 'right' }}>{new Date(edu.graduationYear).toLocaleDateString()}</span>
+                                                                    </div>
+                                                                )
+                                                            })
+                                                        )
+                                                        :
+                                                        (
+                                                            <span style={{ fontSize: '1.25rem', margin: '0.75rem 0' }}>Education Not Added Yet</span>
+                                                        )
                                                     }
                                                 </div>
                                                 <div className='general_post_detail_skills'>
-                                                    <h2>Skills:</h2>
-                                                    <ul
-                                                        style={{
-                                                            margin: '0 1rem'
-                                                        }}
-                                                    >
+                                                    <h2 style={{ margin: '0.75rem 0' }}>Skills:</h2>
                                                     {
-                                                        profileOwnerDetails.skills.map((skill, index) => {
-                                                            return (
-                                                                <li style={{ fontSize: '1.5rem', margin: '0.5rem' }} key={index}>{skill}</li> 
-                                                            )
-                                                        })
+                                                        profileOwnerDetails.skills.length ?
+                                                        (
+                                                            <ul
+                                                                style={{
+                                                                    margin: '0 1rem'
+                                                                }}
+                                                            >
+                                                            {
+                                                                profileOwnerDetails.skills.map((skill, index) => {
+                                                                    return (
+                                                                        <li style={{ fontSize: '1.5rem', margin: '0.75rem 0.75rem' }} key={index}>{skill}</li> 
+                                                                    ) 
+                                                                })
+                                                            }
+                                                            </ul>
+                                                        )
+                                                        :
+                                                        (
+                                                            <span style={{ fontSize: '1.25rem', margin: '0.75rem 0' }}>Skills Not Added Yet</span>
+                                                        )
                                                     }
-                                                    </ul>
+                                                    
                                                 </div>
                                             </div>
                                         ) 
