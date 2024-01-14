@@ -236,32 +236,46 @@ const ProducerDashboard = () => {
                         </div>
                         <div className='producer_dash_main_posts'>
                             { 
-                                myJobPosts.map((job, index) => {
-                                    return (
-                                        <>
-                                            <div className='producer_dash_job_card' key={job._id}>
-                                                <div className='producer_dash_job_card_top'>
-                                                    <span>{job.title}</span>
-                                                </div>
-                                                <div className='producer_dash_job_card_bottom'>
-                                                    <div className='producer_dash_job_card_bottom_left'>
-                                                        <span>{job.employmentType}, {job.location}</span>
+                                myJobPosts.length ?
+                                (
+                                    myJobPosts.map((job, index) => {
+                                        return (
+                                            <>
+                                                <div className='producer_dash_job_card' key={job._id}>
+                                                    <div className='producer_dash_job_card_top'>
+                                                        <span>{job.title}</span>
                                                     </div>
-                                                    <div className='producer_dash_job_card_bottom_right' style={{
-                                                        display: 'flex',
-                                                        flexDirection: 'row',
-                                                        justifyContent: 'center',
-                                                        alignItems: 'center'
-                                                    }}>
-                                                        <button onClick={() => navigate(`/job/${job._id}`)} style={{ padding: '0.75rem 0rem', margin: '0 0.5rem' }}>View Job</button>
-                                                        <button onClick={() => handleApplicantsClick(job)} style={{ padding: '0.75rem 2.5rem' }}>Applicants</button>
+                                                    <div className='producer_dash_job_card_bottom'>
+                                                        <div className='producer_dash_job_card_bottom_left'>
+                                                            <span>{job.employmentType}, {job.location}</span>
+                                                        </div>
+                                                        <div className='producer_dash_job_card_bottom_right' style={{
+                                                            display: 'flex',
+                                                            flexDirection: 'row',
+                                                            justifyContent: 'center',
+                                                            alignItems: 'center'
+                                                        }}>
+                                                            <button onClick={() => navigate(`/job/${job._id}`)} style={{ padding: '0.75rem 0rem', margin: '0 0.5rem' }}>View Job</button>
+                                                            <button onClick={() => handleApplicantsClick(job)} style={{ padding: '0.75rem 2.5rem' }}>Applicants</button>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            
-                                        </>
+                                                
+                                            </>
+                                        )
+                                    })
+                                )
+                                :
+                                (
+                                    loading ?
+                                    (
+                                        <div style={{ height: '100%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}><Loading /></div>
                                     )
-                                })
+                                    :
+                                    (
+                                        <div style={{ height: '100%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>No Job Posts Created</div>
+                                    )
+                                )
                             }
                         </div>
                     </div>
